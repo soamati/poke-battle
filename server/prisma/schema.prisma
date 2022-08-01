@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ItemMode {
+  PERCENTAGE
+  ABSOLUTE
+}
+
+model User {
+  id        Int           @id @default(autoincrement())
+  username  String        @unique
+  password  String
+  wallet    Wallet?
+  inventory UserItem[]
+  pokedex   UserPokemon[]
+
+  @@map("user")
+}
+
+model Stat {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  items Item[]
+
+  @@map("stat")
+}
+
+model Item {
+  id      Int         @id @default(autoincrement())
+  name    String      @unique
+  mode    ItemMode
+  value   Int
+  stat    Stat        @relation(fields: [statId], references: [id])
+  statId  Int         @map("stat_id")
+  stock   ItemStore[]
+  ownedBy UserItem[]
+
+  @@map("item")
+}
+
+model ItemStore {
+  item   Item @relation(fields: [itemId], references: [id])
+  itemId Int  @id @map("item_id")
+  price  Int
+
+  @@map("item_store")
+}
+
+model Pokemon {
+  id      Int           @id @default(autoincrement())
+  name    String
+  attack  Int
+  defense Int
+  health  Int
+  image   String
+  stock   PokemonStore?
+  ownedBy UserPokemon[]
+
+  @@map("pokemon")
+}
+
+model PokemonStore {
+  pokemon   Pokemon @relation(fields: [pokemonId], references: [id])
+  pokemonId Int     @id @map("pokemon_id")
+  price     Int
+
+  @@map("pokemon_store")
+}
+
+model Wallet {
+  user   User  @relation(fields: [userId], references: [id])
+  userId Int   @id @map("user_id")
+  amount Float @default(1000)
+
+  @@map("wallet")
+}
+
+model UserItem {
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @map("user_id")
+  item   Item @relation(fields: [itemId], references: [id])
+  itemId Int  @map("item_id")
+  units  Int  @default(0)
+
+  @@id([userId, itemId])
+  @@map("user_item")
+}
+
+model UserPokemon {
+  user      User    @relation(fields: [userId], references: [id])
+  userId    Int     @map("user_id")
+  pokemon   Pokemon @relation(fields: [pokemonId], references: [id])
+  pokemonId Int     @map("pokemon_id")
+  luck      Float   @default(1)
+
+  @@id([userId, pokemonId])
+  @@map("user_pokemon")
+}
