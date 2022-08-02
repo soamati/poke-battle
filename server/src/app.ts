@@ -5,16 +5,13 @@ import http from "http";
 import cookieParser from "cookie-parser";
 import { ApolloServer } from "apollo-server-express";
 import { getApolloConfig } from "./config/apollo";
-import { buildSchema } from "type-graphql";
-import { TokenPayload } from "./types";
 import { cors } from "./lib/cors";
-import { UserResolver } from "./modules/user/user.resolver";
-import { PokemonResolver } from "./modules/pokemon/pokemon.resolver";
-import { PrismaClient, User } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { StatService } from "./modules/stat/stat.service";
 import { ItemService } from "./modules/item/item.service";
 import { PokemonService } from "./modules/pokemon/pokemon.service";
-import { verify } from "jsonwebtoken";
+import { createContext } from "./lib/createContext";
+import { buildSchema } from "./lib/buildSchema";
 
 export async function main() {
   const prisma = new PrismaClient();
@@ -32,36 +29,11 @@ export async function main() {
   const app = express();
   const httpServer = http.createServer(app);
 
-  const schema = await buildSchema({
-    resolvers: [UserResolver, PokemonResolver],
-  });
+  const schema = await buildSchema();
 
   const server = new ApolloServer({
     schema,
-    context: async (context) => {
-      const { req, res } = context;
-
-      const token = req.cookies["poke-token"];
-      let user: User | null = null;
-
-      if (token) {
-        try {
-          const { id } = verify(
-            token,
-            process.env.SECRET as string
-          ) as TokenPayload;
-
-          user = await prisma.user.findFirst({
-            where: { id },
-            include: { wallet: true },
-          });
-        } catch (error) {
-          console.log(error);
-        }
-      }
-
-      return { req, res, prisma, user, stats, items, pokemons };
-    },
+    context: createContext(prisma, { stats, pokemons, items }),
     ...getApolloConfig(httpServer),
   });
 

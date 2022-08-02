@@ -10,7 +10,7 @@ export class ItemType implements Partial<Item> {
   @Field()
   name: string;
 
-  @Field(() => ItemMode)
+  @Field(() => String)
   mode: ItemMode;
 
   @Field()

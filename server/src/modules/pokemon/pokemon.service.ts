@@ -58,4 +58,13 @@ export class PokemonService {
 
     return pokedex;
   }
+
+  store(skip: number) {
+    return this.prisma.pokemonStore.findMany({
+      include: { pokemon: true },
+      orderBy: [{ price: "asc" }, { pokemon: { id: "asc" } }],
+      skip,
+      take: 20,
+    });
+  }
 }

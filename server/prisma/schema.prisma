@@ -32,13 +32,13 @@ model Stat {
 }
 
 model Item {
-  id      Int         @id @default(autoincrement())
-  name    String      @unique
+  id      Int        @id @default(autoincrement())
+  name    String     @unique
   mode    ItemMode
   value   Int
-  stat    Stat        @relation(fields: [statId], references: [id])
-  statId  Int         @map("stat_id")
-  stock   ItemStore[]
+  stat    Stat       @relation(fields: [statId], references: [id])
+  statId  Int        @map("stat_id")
+  stock   ItemStore?
   ownedBy UserItem[]
 
   @@map("item")

@@ -16,10 +16,26 @@ export class ItemService {
       const price = item.value >= 50 ? 100 : item.value >= 20 ? 50 : 25;
 
       return this.prisma.item.create({
-        data: { ...item, stock: { create: [{ price }] } },
+        data: { ...item, stock: { create: { price } } },
       });
     });
 
     await this.prisma.$transaction(create);
+  }
+
+  findById(id: number) {
+    return this.prisma.item.findFirst({
+      where: { id },
+      include: { stat: true, stock: true },
+    });
+  }
+
+  store(skip: number) {
+    return this.prisma.itemStore.findMany({
+      include: { item: { include: { stat: true } } },
+      orderBy: [{ price: "asc" }, { item: { id: "asc" } }],
+      skip,
+      take: 20,
+    });
   }
 }
