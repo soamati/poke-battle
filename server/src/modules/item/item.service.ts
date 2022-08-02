@@ -30,6 +30,13 @@ export class ItemService {
     });
   }
 
+  findUserInventory(id: number) {
+    return this.prisma.userItem.findMany({
+      where: { userId: id },
+      include: { item: { include: { stat: true } } },
+    });
+  }
+
   store(skip: number) {
     return this.prisma.itemStore.findMany({
       include: { item: { include: { stat: true } } },

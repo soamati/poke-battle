@@ -1,11 +1,24 @@
-import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from "type-graphql";
+import {
+  Arg,
+  Ctx,
+  Mutation,
+  Query,
+  Resolver,
+  UseMiddleware,
+} from "type-graphql";
 import { CurrentUser } from "../../decorators/CurrentUser";
 import { IsAuth } from "../../middlewares/IsAuth";
 import { Context, CurrentUserType } from "../../types";
-import { ItemType } from "./item.schema";
+import { InventoryItem, ItemType } from "./item.schema";
 
 @Resolver()
 export class ItemResolver {
+  @UseMiddleware(IsAuth)
+  @Query(() => [InventoryItem])
+  inventory(@Ctx() { items }: Context, @CurrentUser() user: CurrentUserType) {
+    return items.findUserInventory(user.id);
+  }
+
   @UseMiddleware(IsAuth)
   @Mutation(() => ItemType)
   async buyItem(
