@@ -1,0 +1,13 @@
+query Whoami {
+  whoami {
+    id
+    username
+  }
+}
+
+mutation Signin($data: UserInput!) {
+  signin(data: $data) {
+    id
+    username
+  }
+}
