@@ -10,13 +10,9 @@ const withAuthGSSP = (): GetServerSideProps => {
     try {
       const { cookie } = req.headers;
 
-      console.log(cookie);
-
       const res = (await client.request(WhoamiDocument, {}, {
         cookie,
       } as HeadersInit)) as WhoamiQuery;
-
-      console.log({ res });
 
       user = res.whoami;
 
@@ -30,7 +26,6 @@ const withAuthGSSP = (): GetServerSideProps => {
       }
 
       if (user && notAuthRoutes.includes(resolvedUrl)) {
-        console.log("hajaa");
         return {
           redirect: {
             destination: "/",
@@ -45,7 +40,6 @@ const withAuthGSSP = (): GetServerSideProps => {
         },
       };
     } catch (error) {
-      console.log("error!");
       return {
         props: {
           user: null,
