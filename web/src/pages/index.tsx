@@ -1,7 +1,8 @@
-import client from "src/client";
 import type { NextPage } from "next";
 import { usePokemonsQuery } from "src/generated";
+import client from "src/client";
 import Page from "src/components/Page";
+import withAuthGSSP from "src/lib/withAuthGSSP";
 
 const Home: NextPage = () => {
   const { data, isLoading } = usePokemonsQuery(client);
@@ -14,3 +15,5 @@ const Home: NextPage = () => {
 };
 
 export default Home;
+
+export const getServerSideProps = withAuthGSSP();

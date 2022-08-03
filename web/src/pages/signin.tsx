@@ -14,10 +14,11 @@ import React from "react";
 import client from "src/client";
 import Form from "src/components/Form";
 import Page from "src/components/Page";
-import { useSigninMutation, WhoamiDocument, WhoamiQuery } from "src/generated";
+import { useSigninMutation } from "src/generated";
 import useErrorParser from "src/hooks/useErrorParser";
 import useFocus from "src/hooks/useFocus";
 import useInput from "src/hooks/useInput";
+import withAuthGSSP from "src/lib/withAuthGSSP";
 
 type Props = {};
 
@@ -104,24 +105,4 @@ const SigninPage = (props: Props) => {
 
 export default SigninPage;
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  try {
-    const { cookie } = req.headers;
-
-    const res = (await client.request(WhoamiDocument, {}, {
-      cookie,
-    } as HeadersInit)) as WhoamiQuery;
-
-    return {
-      props: {
-        user: res.whoami,
-      },
-    };
-  } catch (error) {
-    return {
-      props: {
-        user: null,
-      },
-    };
-  }
-};
+export const getServerSideProps: GetServerSideProps = withAuthGSSP();

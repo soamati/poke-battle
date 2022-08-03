@@ -11,7 +11,10 @@ const SIGNIN_ERROR = "Credenciales incorrectas";
 @Resolver()
 export class UserResolver {
   @Mutation(() => UserType)
-  async signup(@Arg("data") data: UserInput, @Ctx() { res, prisma }: Context) {
+  async signup(
+    @Arg("data") data: UserInput,
+    @Ctx() { req, res, prisma }: Context
+  ) {
     try {
       const { username, password } = data;
       const hashed = await hash(password, 10);
@@ -26,7 +29,7 @@ export class UserResolver {
       });
 
       const token = createAccessToken(user);
-      res.cookie("poke-token", token, cookieOptions);
+      res.cookie("poke-token", token, cookieOptions(req));
 
       return user;
     } catch (error: any) {
@@ -38,7 +41,10 @@ export class UserResolver {
   }
 
   @Mutation(() => UserType)
-  async signin(@Arg("data") data: UserInput, @Ctx() { res, prisma }: Context) {
+  async signin(
+    @Arg("data") data: UserInput,
+    @Ctx() { req, res, prisma }: Context
+  ) {
     const user = await prisma.user.findFirst({
       where: { username: data.username },
     });
@@ -51,7 +57,7 @@ export class UserResolver {
     if (!isCorrect) throw new Error(SIGNIN_ERROR);
 
     const token = createAccessToken(rest);
-    res.cookie("poke-token", token, cookieOptions);
+    res.cookie("poke-token", token, cookieOptions(req));
 
     return rest;
   }
@@ -68,9 +74,9 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
-  signout(@Ctx() { res }: Context) {
+  signout(@Ctx() { req, res }: Context) {
     try {
-      res.clearCookie("poke-token", cookieOptions);
+      res.clearCookie("poke-token", cookieOptions(req));
       return true;
     } catch (error) {
       console.log(error);

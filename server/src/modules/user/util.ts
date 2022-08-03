@@ -1,4 +1,4 @@
-import { CookieOptions } from "express";
+import { CookieOptions, Request } from "express";
 import { sign } from "jsonwebtoken";
 
 export function createAccessToken(payload: any) {
@@ -9,9 +9,16 @@ export function createAccessToken(payload: any) {
   return token;
 }
 
-export const cookieOptions: CookieOptions = {
-  maxAge: 1000 * 60 * 60 * 24, // 1 day
-  httpOnly: true,
-  secure: true,
-  sameSite: "none",
-};
+export function cookieOptions(req: Request): CookieOptions {
+  const options: CookieOptions = {
+    maxAge: 1000 * 60 * 60 * 24, // 1 day
+    httpOnly: true,
+  };
+
+  if (req.headers.origin?.startsWith("https")) {
+    options.secure = true;
+    options.sameSite = "none";
+  }
+
+  return options;
+}
