@@ -9,6 +9,9 @@ export class PokemonStore {
 
   @Field()
   price: number;
+
+  @Field()
+  isOwned: boolean;
 }
 
 @ObjectType()

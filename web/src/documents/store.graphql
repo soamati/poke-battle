@@ -1,0 +1,14 @@
+query PokemonStore($skip: Int!) {
+  pokemonStore(skip: $skip) {
+    pokemon {
+      id
+      name
+      attack
+      defense
+      health
+      image
+    }
+    price
+    isOwned
+  }
+}

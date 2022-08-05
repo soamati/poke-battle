@@ -59,12 +59,23 @@ export class PokemonService {
     return pokedex;
   }
 
-  store(skip: number) {
-    return this.prisma.pokemonStore.findMany({
-      include: { pokemon: true },
+  async store(skip: number, ownerId?: number) {
+    const pokemons = await this.prisma.pokemonStore.findMany({
+      include: { pokemon: { include: { ownedBy: true } } },
       orderBy: [{ price: "asc" }, { pokemon: { id: "asc" } }],
       skip,
       take: 20,
     });
+
+    const store = pokemons.map(({ pokemon, price }) => {
+      const { ownedBy, ...rest } = pokemon;
+      return {
+        pokemon: rest,
+        price,
+        isOwned: ownedBy.findIndex(({ userId }) => userId === ownerId) !== -1,
+      };
+    });
+
+    return store;
   }
 }

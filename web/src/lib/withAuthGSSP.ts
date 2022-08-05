@@ -2,7 +2,7 @@ import client from "src/client";
 import { GetServerSideProps } from "next";
 import { WhoamiQuery, WhoamiDocument } from "src/generated";
 
-const notAuthRoutes = ["/signin"];
+const notAuthRoutes = ["/signin", "/signup"];
 
 const withAuthGSSP = (): GetServerSideProps => {
   return async ({ req, resolvedUrl }) => {

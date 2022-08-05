@@ -1,6 +1,6 @@
 import { GraphQLClient } from 'graphql-request';
 import { RequestInit } from 'graphql-request/dist/types.dom';
-import { useQuery, useMutation, UseQueryOptions, UseMutationOptions } from '@tanstack/react-query';
+import { useQuery, useInfiniteQuery, useMutation, UseQueryOptions, UseInfiniteQueryOptions, UseMutationOptions } from '@tanstack/react-query';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -20,13 +20,11 @@ export type Scalars = {
 };
 
 export type InventoryItem = {
-  __typename?: 'InventoryItem';
   item: Item;
   units: Scalars['Int'];
 };
 
 export type Item = {
-  __typename?: 'Item';
   id: Scalars['Float'];
   mode: Scalars['String'];
   name: Scalars['String'];
@@ -35,13 +33,11 @@ export type Item = {
 };
 
 export type ItemStore = {
-  __typename?: 'ItemStore';
   item: Item;
   price: Scalars['Float'];
 };
 
 export type Mutation = {
-  __typename?: 'Mutation';
   buyItem: Item;
   buyPokemon: Pokemon;
   signin: User;
@@ -70,13 +66,11 @@ export type MutationSignupArgs = {
 };
 
 export type PokedexItem = {
-  __typename?: 'PokedexItem';
   luck: Scalars['Float'];
   pokemon: Pokemon;
 };
 
 export type Pokemon = {
-  __typename?: 'Pokemon';
   attack: Scalars['Float'];
   defense: Scalars['Float'];
   health: Scalars['Float'];
@@ -86,13 +80,12 @@ export type Pokemon = {
 };
 
 export type PokemonStore = {
-  __typename?: 'PokemonStore';
+  isOwned: Scalars['Boolean'];
   pokemon: Pokemon;
   price: Scalars['Float'];
 };
 
 export type Query = {
-  __typename?: 'Query';
   inventory: Array<InventoryItem>;
   itemStore: Array<ItemStore>;
   pokedex: Array<PokedexItem>;
@@ -113,17 +106,15 @@ export type QueryPokedexArgs = {
 
 
 export type QueryPokemonStoreArgs = {
-  skip?: InputMaybe<Scalars['Float']>;
+  skip?: InputMaybe<Scalars['Int']>;
 };
 
 export type Stat = {
-  __typename?: 'Stat';
   id: Scalars['Float'];
   name: Scalars['String'];
 };
 
 export type User = {
-  __typename?: 'User';
   id: Scalars['Float'];
   username: Scalars['String'];
 };
@@ -136,19 +127,26 @@ export type UserInput = {
 export type PokemonsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type PokemonsQuery = { __typename?: 'Query', pokemons: Array<{ __typename?: 'Pokemon', id: number, name: string }> };
+export type PokemonsQuery = { pokemons: Array<{ id: number, name: string }> };
+
+export type PokemonStoreQueryVariables = Exact<{
+  skip: Scalars['Int'];
+}>;
+
+
+export type PokemonStoreQuery = { pokemonStore: Array<{ price: number, isOwned: boolean, pokemon: { id: number, name: string, attack: number, defense: number, health: number, image: string } }> };
 
 export type WhoamiQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type WhoamiQuery = { __typename?: 'Query', whoami?: { __typename?: 'User', id: number, username: string } | null };
+export type WhoamiQuery = { whoami?: { id: number, username: string } | null };
 
 export type SigninMutationVariables = Exact<{
   data: UserInput;
 }>;
 
 
-export type SigninMutation = { __typename?: 'Mutation', signin: { __typename?: 'User', id: number, username: string } };
+export type SigninMutation = { signin: { id: number, username: string } };
 
 
 export const PokemonsDocument = `
@@ -173,6 +171,68 @@ export const usePokemonsQuery = <
       fetcher<PokemonsQuery, PokemonsQueryVariables>(client, PokemonsDocument, variables, headers),
       options
     );
+export const useInfinitePokemonsQuery = <
+      TData = PokemonsQuery,
+      TError = unknown
+    >(
+      _pageParamKey: keyof PokemonsQueryVariables,
+      client: GraphQLClient,
+      variables?: PokemonsQueryVariables,
+      options?: UseInfiniteQueryOptions<PokemonsQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useInfiniteQuery<PokemonsQuery, TError, TData>(
+      variables === undefined ? ['Pokemons.infinite'] : ['Pokemons.infinite', variables],
+      (metaData) => fetcher<PokemonsQuery, PokemonsQueryVariables>(client, PokemonsDocument, {...variables, ...(metaData.pageParam ?? {})}, headers)(),
+      options
+    );
+
+export const PokemonStoreDocument = `
+    query PokemonStore($skip: Int!) {
+  pokemonStore(skip: $skip) {
+    pokemon {
+      id
+      name
+      attack
+      defense
+      health
+      image
+    }
+    price
+    isOwned
+  }
+}
+    `;
+export const usePokemonStoreQuery = <
+      TData = PokemonStoreQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: PokemonStoreQueryVariables,
+      options?: UseQueryOptions<PokemonStoreQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<PokemonStoreQuery, TError, TData>(
+      ['PokemonStore', variables],
+      fetcher<PokemonStoreQuery, PokemonStoreQueryVariables>(client, PokemonStoreDocument, variables, headers),
+      options
+    );
+export const useInfinitePokemonStoreQuery = <
+      TData = PokemonStoreQuery,
+      TError = unknown
+    >(
+      _pageParamKey: keyof PokemonStoreQueryVariables,
+      client: GraphQLClient,
+      variables: PokemonStoreQueryVariables,
+      options?: UseInfiniteQueryOptions<PokemonStoreQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useInfiniteQuery<PokemonStoreQuery, TError, TData>(
+      ['PokemonStore.infinite', variables],
+      (metaData) => fetcher<PokemonStoreQuery, PokemonStoreQueryVariables>(client, PokemonStoreDocument, {...variables, ...(metaData.pageParam ?? {})}, headers)(),
+      options
+    );
+
 export const WhoamiDocument = `
     query Whoami {
   whoami {
@@ -195,6 +255,22 @@ export const useWhoamiQuery = <
       fetcher<WhoamiQuery, WhoamiQueryVariables>(client, WhoamiDocument, variables, headers),
       options
     );
+export const useInfiniteWhoamiQuery = <
+      TData = WhoamiQuery,
+      TError = unknown
+    >(
+      _pageParamKey: keyof WhoamiQueryVariables,
+      client: GraphQLClient,
+      variables?: WhoamiQueryVariables,
+      options?: UseInfiniteQueryOptions<WhoamiQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useInfiniteQuery<WhoamiQuery, TError, TData>(
+      variables === undefined ? ['Whoami.infinite'] : ['Whoami.infinite', variables],
+      (metaData) => fetcher<WhoamiQuery, WhoamiQueryVariables>(client, WhoamiDocument, {...variables, ...(metaData.pageParam ?? {})}, headers)(),
+      options
+    );
+
 export const SigninDocument = `
     mutation Signin($data: UserInput!) {
   signin(data: $data) {

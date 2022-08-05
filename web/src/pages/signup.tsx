@@ -2,7 +2,6 @@ import {
   Button,
   Center,
   FormControl,
-  FormErrorMessage,
   FormHelperText,
   Heading,
   Input,
@@ -12,21 +11,14 @@ import {
 } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import React from "react";
-import client from "src/client";
 import Form from "src/components/Form";
 import Page from "src/components/Page";
-import { useSigninMutation } from "src/generated";
-import useErrorParser from "src/hooks/useErrorParser";
 import useFocus from "src/hooks/useFocus";
 import useInput from "src/hooks/useInput";
 import withAuthGSSP from "src/lib/withAuthGSSP";
 import NextLink from "next/link";
 
-type Props = {};
-
-const fields = ["username", "password"];
-
-const SigninPage = (props: Props) => {
+const SignupPage = () => {
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const { ref } = useFocus<HTMLInputElement>();
 
@@ -34,28 +26,10 @@ const SigninPage = (props: Props) => {
   const [username, onChangeUsername] = useInput();
   const [password, onChangePassword] = useInput();
 
-  const { mutate, isLoading } = useSigninMutation(client);
-  const { parser, errors } = useErrorParser(fields);
-
-  const onSignin = (e: React.FormEvent) => {
-    e.preventDefault();
-    mutate(
-      { data: { username, password } },
-      {
-        onSuccess: (data) => {
-          console.log(data);
-        },
-        onError: (error: any) => {
-          parser(error);
-        },
-      }
-    );
-  };
-
   return (
     <Page full>
       <Center flex={1}>
-        <Form onSubmit={onSignin} w="full">
+        <Form w="full">
           <Stack
             w={["full", "sm"]}
             spacing={6}
@@ -69,7 +43,7 @@ const SigninPage = (props: Props) => {
             <Heading size="md" textAlign="center">
               Bienvenido
             </Heading>
-            <FormControl isInvalid={errors.username !== undefined}>
+            <FormControl>
               <Input
                 placeholder="usuario"
                 variant="filled"
@@ -78,12 +52,9 @@ const SigninPage = (props: Props) => {
                 onChange={onChangeUsername}
               />
               <FormHelperText>¿Quién eres?</FormHelperText>
-              <FormErrorMessage>
-                {errors.username && errors.username[0]}
-              </FormErrorMessage>
             </FormControl>
 
-            <FormControl isInvalid={errors.password !== undefined}>
+            <FormControl>
               <Input
                 placeholder="clave"
                 variant="filled"
@@ -91,17 +62,14 @@ const SigninPage = (props: Props) => {
                 onChange={onChangePassword}
               />
               <FormHelperText>No se la diré a nadie 🤫</FormHelperText>
-              <FormErrorMessage>
-                {errors.password && errors.password[0]}
-              </FormErrorMessage>
             </FormControl>
-            <Button colorScheme="yellow" type="submit" isLoading={isLoading}>
+            <Button colorScheme="yellow" type="submit">
               Entrar
             </Button>
 
             <Center>
-              <NextLink href="/signup" passHref>
-                <Link>No tengo cuenta</Link>
+              <NextLink href="/signin" passHref>
+                <Link>Ya tengo cuenta</Link>
               </NextLink>
             </Center>
           </Stack>
@@ -111,6 +79,6 @@ const SigninPage = (props: Props) => {
   );
 };
 
-export default SigninPage;
+export default SignupPage;
 
 export const getServerSideProps: GetServerSideProps = withAuthGSSP();
