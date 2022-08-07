@@ -11,3 +11,9 @@ mutation Signin($data: UserInput!) {
     username
   }
 }
+
+query Wallet {
+  wallet {
+    amount
+  }
+}

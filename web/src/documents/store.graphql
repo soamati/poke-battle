@@ -12,3 +12,20 @@ query PokemonStore($skip: Int!) {
     isOwned
   }
 }
+
+query ItemStore($skip: Int!) {
+  itemStore(skip: $skip) {
+    item {
+      id
+      name
+      value
+      mode
+      stat {
+        id
+        name
+      }
+    }
+    price
+    onInventory
+  }
+}

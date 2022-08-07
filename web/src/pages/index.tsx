@@ -1,11 +1,11 @@
 import type { NextPage } from "next";
-import client from "src/client";
-import Page from "src/components/Page";
-import withAuthGSSP from "src/lib/withAuthGSSP";
 import NextLink from "next/link";
-import { usePokemonsQuery, useWhoamiQuery, WhoamiQuery } from "src/generated";
-import { Is } from "src/types";
 import { HStack, Link, Stack, Text } from "@chakra-ui/react";
+import client from "@/client";
+import Page from "@/components/Page";
+import { WhoamiQuery, usePokemonsQuery, useWhoamiQuery } from "@/generated";
+import withAuthGSSP from "@/lib/withAuthGSSP";
+import { Is } from "@/types";
 
 export const getServerSideProps = withAuthGSSP();
 
@@ -33,9 +33,12 @@ const Home: NextPage<Props> = ({ user }) => {
   return (
     <Page>
       <Stack>
-        <HStack>
+        <HStack spacing={4}>
           <NextLink href="/store/pokemon">
             <Link>Tienda Pokémon</Link>
+          </NextLink>
+          <NextLink href="/store/item">
+            <Link>Tienda Items</Link>
           </NextLink>
         </HStack>
         <Text>{JSON.stringify(currentUser, null, 2)}</Text>

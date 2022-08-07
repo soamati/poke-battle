@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Button,
   Center,
@@ -11,22 +12,23 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
-import React from "react";
-import client from "src/client";
-import Form from "src/components/Form";
-import Page from "src/components/Page";
-import { useSigninMutation } from "src/generated";
-import useErrorParser from "src/hooks/useErrorParser";
-import useFocus from "src/hooks/useFocus";
-import useInput from "src/hooks/useInput";
-import withAuthGSSP from "src/lib/withAuthGSSP";
 import NextLink from "next/link";
+import client from "@/client";
+import Form from "@/components/Form";
+import Page from "@/components/Page";
+import { useSigninMutation } from "@/generated";
+import useErrorParser from "@/hooks/useErrorParser";
+import useFocus from "@/hooks/useFocus";
+import useInput from "@/hooks/useInput";
+import withAuthGSSP from "@/lib/withAuthGSSP";
+import { useRouter } from "next/router";
 
 type Props = {};
 
 const fields = ["username", "password"];
 
 const SigninPage = (props: Props) => {
+  const router = useRouter();
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const { ref } = useFocus<HTMLInputElement>();
 
@@ -42,12 +44,8 @@ const SigninPage = (props: Props) => {
     mutate(
       { data: { username, password } },
       {
-        onSuccess: (data) => {
-          console.log(data);
-        },
-        onError: (error: any) => {
-          parser(error);
-        },
+        onSuccess: () => router.push("/"),
+        onError: (error: any) => parser(error),
       }
     );
   };

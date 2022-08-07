@@ -4,3 +4,14 @@ query Pokemons {
     name
   }
 }
+
+mutation BuyPokemon($id: Int!) {
+  buyPokemon(id: $id) {
+    id
+    name
+    attack
+    defense
+    health
+    image
+  }
+}

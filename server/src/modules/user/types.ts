@@ -1,6 +1,6 @@
-import { User } from "@prisma/client";
+import { User, Wallet } from "@prisma/client";
 import { Matches, MinLength, NotContains } from "class-validator";
-import { Field, InputType } from "type-graphql";
+import { Field, InputType, ObjectType } from "type-graphql";
 
 @InputType()
 export class UserInput implements Partial<User> {
@@ -14,4 +14,10 @@ export class UserInput implements Partial<User> {
   @NotContains(" ", { message: "Sin espacios" })
   @MinLength(3, { message: "Al menos 3 caracteres" })
   password: string;
+}
+
+@ObjectType("Wallet")
+export class WalletType implements Partial<Wallet> {
+  @Field()
+  amount: number;
 }

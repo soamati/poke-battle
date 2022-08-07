@@ -1,0 +1,3 @@
+mutation BuyItem($data: BuyItemInput!) {
+  buyItems(data: $data)
+}

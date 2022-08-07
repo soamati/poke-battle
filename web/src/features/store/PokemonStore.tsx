@@ -1,9 +1,9 @@
 import React from "react";
-import client from "src/client";
-import useObserver from "src/hooks/useObserver";
-import PokemonPreview from "src/features/pokemon/PokemonPreview";
+import Pokemon from "@/features/store/Pokemon";
+import client from "@/client";
+import useObserver from "@/hooks/useObserver";
+import { useInfinitePokemonStoreQuery } from "@/generated";
 import { Box, Center, SimpleGrid, Spinner } from "@chakra-ui/react";
-import { useInfinitePokemonStoreQuery } from "src/generated";
 
 const PokemonStore = () => {
   const { data, fetchNextPage, isFetching } = useInfinitePokemonStoreQuery(
@@ -45,7 +45,7 @@ const PokemonStore = () => {
         {data.pages.map((page, i) => (
           <React.Fragment key={i}>
             {page.pokemonStore.map((pokemon) => (
-              <PokemonPreview pokemon={pokemon} key={pokemon.pokemon.id} />
+              <Pokemon pokemon={pokemon} key={pokemon.pokemon.id} />
             ))}
           </React.Fragment>
         ))}

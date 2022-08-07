@@ -21,4 +21,7 @@ export class ItemStore {
 
   @Field()
   price: number;
+
+  @Field()
+  onInventory: number;
 }

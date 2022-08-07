@@ -1,6 +1,7 @@
 import {
   Arg,
   Ctx,
+  Int,
   Mutation,
   Query,
   Resolver,
@@ -31,7 +32,7 @@ export class PokemonResolver {
   @UseMiddleware(IsAuth)
   @Mutation(() => PokemonType)
   async buyPokemon(
-    @Arg("id") id: number,
+    @Arg("id", () => Int) id: number,
     @Ctx() { pokemons, prisma }: Context,
     @CurrentUser() user: CurrentUserType
   ) {

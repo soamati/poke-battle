@@ -20,7 +20,6 @@ function useObserver<T extends HTMLElement>(
 
     return function cleanup() {
       if (observer) {
-        console.log("Disconnecting observer...");
         observer.disconnect();
       }
     };

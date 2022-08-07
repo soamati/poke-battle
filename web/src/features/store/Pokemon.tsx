@@ -10,18 +10,32 @@ import {
   Box,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { PokemonStoreQuery } from "src/generated";
+import useBuyPokemon from "./useBuyPokemon";
+import { PokemonStoreQuery } from "@/generated";
 
 type Props = {
   pokemon: PokemonStoreQuery["pokemonStore"][number];
 };
 
-const PokemonPreview = ({ pokemon: { pokemon, price, isOwned } }: Props) => {
+const PokemonStoreItem = ({
+  pokemon: { pokemon, price, isOwned: _isOwned },
+}: Props) => {
   const borderColor = useColorModeValue("gray.200", "gray.700");
+  const [isOwned, setIsOwned] = React.useState(_isOwned);
+  const [buy, isBuying] = useBuyPokemon();
+
+  const handleBuy = () => {
+    buy(
+      { id: pokemon.id },
+      {
+        onSuccess: () => setIsOwned(true),
+      }
+    );
+  };
 
   return (
     <Box borderColor={borderColor} borderWidth={1} rounded="md" p={4}>
-      <Stack key={pokemon.id} align="center" spacing={4}>
+      <Stack align="center" spacing={4}>
         <Heading size="sm">{pokemon.name}</Heading>
         <Image
           src={pokemon.image}
@@ -45,6 +59,8 @@ const PokemonPreview = ({ pokemon: { pokemon, price, isOwned } }: Props) => {
           size="sm"
           colorScheme={!isOwned ? "yellow" : "teal"}
           isDisabled={isOwned}
+          isLoading={isBuying}
+          onClick={handleBuy}
         >
           {!isOwned ? "Comprar" : "En Pokédex"}
         </Button>
@@ -53,4 +69,4 @@ const PokemonPreview = ({ pokemon: { pokemon, price, isOwned } }: Props) => {
   );
 };
 
-export default PokemonPreview;
+export default PokemonStoreItem;

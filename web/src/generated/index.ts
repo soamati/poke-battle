@@ -1,6 +1,6 @@
 import { GraphQLClient } from 'graphql-request';
 import { RequestInit } from 'graphql-request/dist/types.dom';
-import { useQuery, useInfiniteQuery, useMutation, UseQueryOptions, UseInfiniteQueryOptions, UseMutationOptions } from '@tanstack/react-query';
+import { useMutation, useQuery, useInfiniteQuery, UseMutationOptions, UseQueryOptions, UseInfiniteQueryOptions } from '@tanstack/react-query';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -19,6 +19,10 @@ export type Scalars = {
   Float: number;
 };
 
+export type BuyItemInput = {
+  itemsWithCount: Array<ItemWithCount>;
+};
+
 export type InventoryItem = {
   item: Item;
   units: Scalars['Int'];
@@ -34,11 +38,17 @@ export type Item = {
 
 export type ItemStore = {
   item: Item;
+  onInventory: Scalars['Float'];
   price: Scalars['Float'];
 };
 
+export type ItemWithCount = {
+  count: Scalars['Int'];
+  itemId: Scalars['Float'];
+};
+
 export type Mutation = {
-  buyItem: Item;
+  buyItems: Scalars['Boolean'];
   buyPokemon: Pokemon;
   signin: User;
   signout: Scalars['Boolean'];
@@ -46,13 +56,13 @@ export type Mutation = {
 };
 
 
-export type MutationBuyItemArgs = {
-  id: Scalars['Float'];
+export type MutationBuyItemsArgs = {
+  data: BuyItemInput;
 };
 
 
 export type MutationBuyPokemonArgs = {
-  id: Scalars['Float'];
+  id: Scalars['Int'];
 };
 
 
@@ -91,12 +101,13 @@ export type Query = {
   pokedex: Array<PokedexItem>;
   pokemonStore: Array<PokemonStore>;
   pokemons: Array<Pokemon>;
+  wallet?: Maybe<Wallet>;
   whoami?: Maybe<User>;
 };
 
 
 export type QueryItemStoreArgs = {
-  skip?: InputMaybe<Scalars['Float']>;
+  skip?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -124,10 +135,28 @@ export type UserInput = {
   username: Scalars['String'];
 };
 
+export type Wallet = {
+  amount: Scalars['Float'];
+};
+
+export type BuyItemMutationVariables = Exact<{
+  data: BuyItemInput;
+}>;
+
+
+export type BuyItemMutation = { buyItems: boolean };
+
 export type PokemonsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type PokemonsQuery = { pokemons: Array<{ id: number, name: string }> };
+
+export type BuyPokemonMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type BuyPokemonMutation = { buyPokemon: { id: number, name: string, attack: number, defense: number, health: number, image: string } };
 
 export type PokemonStoreQueryVariables = Exact<{
   skip: Scalars['Int'];
@@ -135,6 +164,13 @@ export type PokemonStoreQueryVariables = Exact<{
 
 
 export type PokemonStoreQuery = { pokemonStore: Array<{ price: number, isOwned: boolean, pokemon: { id: number, name: string, attack: number, defense: number, health: number, image: string } }> };
+
+export type ItemStoreQueryVariables = Exact<{
+  skip: Scalars['Int'];
+}>;
+
+
+export type ItemStoreQuery = { itemStore: Array<{ price: number, onInventory: number, item: { id: number, name: string, value: number, mode: string, stat: { id: number, name: string } } }> };
 
 export type WhoamiQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -148,7 +184,30 @@ export type SigninMutationVariables = Exact<{
 
 export type SigninMutation = { signin: { id: number, username: string } };
 
+export type WalletQueryVariables = Exact<{ [key: string]: never; }>;
 
+
+export type WalletQuery = { wallet?: { amount: number } | null };
+
+
+export const BuyItemDocument = `
+    mutation BuyItem($data: BuyItemInput!) {
+  buyItems(data: $data)
+}
+    `;
+export const useBuyItemMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<BuyItemMutation, TError, BuyItemMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<BuyItemMutation, TError, BuyItemMutationVariables, TContext>(
+      ['BuyItem'],
+      (variables?: BuyItemMutationVariables) => fetcher<BuyItemMutation, BuyItemMutationVariables>(client, BuyItemDocument, variables, headers)(),
+      options
+    );
 export const PokemonsDocument = `
     query Pokemons {
   pokemons {
@@ -187,6 +246,31 @@ export const useInfinitePokemonsQuery = <
       options
     );
 
+export const BuyPokemonDocument = `
+    mutation BuyPokemon($id: Int!) {
+  buyPokemon(id: $id) {
+    id
+    name
+    attack
+    defense
+    health
+    image
+  }
+}
+    `;
+export const useBuyPokemonMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<BuyPokemonMutation, TError, BuyPokemonMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<BuyPokemonMutation, TError, BuyPokemonMutationVariables, TContext>(
+      ['BuyPokemon'],
+      (variables?: BuyPokemonMutationVariables) => fetcher<BuyPokemonMutation, BuyPokemonMutationVariables>(client, BuyPokemonDocument, variables, headers)(),
+      options
+    );
 export const PokemonStoreDocument = `
     query PokemonStore($skip: Int!) {
   pokemonStore(skip: $skip) {
@@ -230,6 +314,54 @@ export const useInfinitePokemonStoreQuery = <
     useInfiniteQuery<PokemonStoreQuery, TError, TData>(
       ['PokemonStore.infinite', variables],
       (metaData) => fetcher<PokemonStoreQuery, PokemonStoreQueryVariables>(client, PokemonStoreDocument, {...variables, ...(metaData.pageParam ?? {})}, headers)(),
+      options
+    );
+
+export const ItemStoreDocument = `
+    query ItemStore($skip: Int!) {
+  itemStore(skip: $skip) {
+    item {
+      id
+      name
+      value
+      mode
+      stat {
+        id
+        name
+      }
+    }
+    price
+    onInventory
+  }
+}
+    `;
+export const useItemStoreQuery = <
+      TData = ItemStoreQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: ItemStoreQueryVariables,
+      options?: UseQueryOptions<ItemStoreQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<ItemStoreQuery, TError, TData>(
+      ['ItemStore', variables],
+      fetcher<ItemStoreQuery, ItemStoreQueryVariables>(client, ItemStoreDocument, variables, headers),
+      options
+    );
+export const useInfiniteItemStoreQuery = <
+      TData = ItemStoreQuery,
+      TError = unknown
+    >(
+      _pageParamKey: keyof ItemStoreQueryVariables,
+      client: GraphQLClient,
+      variables: ItemStoreQueryVariables,
+      options?: UseInfiniteQueryOptions<ItemStoreQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useInfiniteQuery<ItemStoreQuery, TError, TData>(
+      ['ItemStore.infinite', variables],
+      (metaData) => fetcher<ItemStoreQuery, ItemStoreQueryVariables>(client, ItemStoreDocument, {...variables, ...(metaData.pageParam ?? {})}, headers)(),
       options
     );
 
@@ -290,5 +422,41 @@ export const useSigninMutation = <
     useMutation<SigninMutation, TError, SigninMutationVariables, TContext>(
       ['Signin'],
       (variables?: SigninMutationVariables) => fetcher<SigninMutation, SigninMutationVariables>(client, SigninDocument, variables, headers)(),
+      options
+    );
+export const WalletDocument = `
+    query Wallet {
+  wallet {
+    amount
+  }
+}
+    `;
+export const useWalletQuery = <
+      TData = WalletQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: WalletQueryVariables,
+      options?: UseQueryOptions<WalletQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<WalletQuery, TError, TData>(
+      variables === undefined ? ['Wallet'] : ['Wallet', variables],
+      fetcher<WalletQuery, WalletQueryVariables>(client, WalletDocument, variables, headers),
+      options
+    );
+export const useInfiniteWalletQuery = <
+      TData = WalletQuery,
+      TError = unknown
+    >(
+      _pageParamKey: keyof WalletQueryVariables,
+      client: GraphQLClient,
+      variables?: WalletQueryVariables,
+      options?: UseInfiniteQueryOptions<WalletQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useInfiniteQuery<WalletQuery, TError, TData>(
+      variables === undefined ? ['Wallet.infinite'] : ['Wallet.infinite', variables],
+      (metaData) => fetcher<WalletQuery, WalletQueryVariables>(client, WalletDocument, {...variables, ...(metaData.pageParam ?? {})}, headers)(),
       options
     );

@@ -1,11 +1,17 @@
+import { useToast } from "@chakra-ui/react";
 import React from "react";
 
 type State = {
   [property: string]: string[];
 };
 
-export default function useErrorParser(fields: string[]) {
+type Options = {
+  withToast: boolean;
+};
+
+export default function useErrorParser(fields: string[], options?: Options) {
   const [errors, setErrors] = React.useState<State>({});
+  const toast = useToast();
 
   const parser = React.useCallback(
     (error: any) => {
@@ -16,7 +22,15 @@ export default function useErrorParser(fields: string[]) {
       const { errors } = error.response;
       if (!(errors instanceof Array)) return;
 
-      errors.forEach((e) => {
+      errors.forEach((e, i) => {
+        if (i === 0 && options?.withToast) {
+          toast({
+            title: "Ups!",
+            description: e.message ?? "Algo salió mal",
+            status: "warning",
+          });
+        }
+
         const validationErrors = e.extensions?.exception?.validationErrors;
         if (!(validationErrors instanceof Array)) return;
 
@@ -31,7 +45,7 @@ export default function useErrorParser(fields: string[]) {
         });
       });
     },
-    [fields]
+    [fields, options, toast]
   );
 
   return { errors, parser };

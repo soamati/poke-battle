@@ -9,7 +9,13 @@ import {
 import { CurrentUser } from "../../decorators/CurrentUser";
 import { IsAuth } from "../../middlewares/IsAuth";
 import { Context, CurrentUserType } from "../../types";
-import { InventoryItem, ItemType } from "./item.schema";
+import { InventoryItem } from "./item.schema";
+import { BuyItemInput } from "./types";
+
+const CONTEMPLATED_ERRORS = {
+  UNAVAILABLE_ITEM: "Algún item no está a la venta",
+  INSUFFICIENT_POKECOINS: "No tenés suficientes Pokécoins",
+};
 
 @Resolver()
 export class ItemResolver {
@@ -20,49 +26,50 @@ export class ItemResolver {
   }
 
   @UseMiddleware(IsAuth)
-  @Mutation(() => ItemType)
-  async buyItem(
-    @Arg("id") id: number,
+  @Mutation(() => Boolean)
+  async buyItems(
+    @Arg("data") { itemsWithCount }: BuyItemInput,
     @Ctx() { items, prisma }: Context,
     @CurrentUser() user: CurrentUserType
   ) {
     try {
-      const item = await items.findById(id);
+      const toBuy = await items.findToBuy(itemsWithCount);
 
-      if (!item || !item.stock) {
-        throw new Error("No está a la venta");
+      if (!toBuy) {
+        throw new Error(CONTEMPLATED_ERRORS.UNAVAILABLE_ITEM);
       }
 
-      if (item.stock.price > user.wallet.amount) {
-        throw new Error("No tenés suficientes Pokécoins");
+      const { products, total } = toBuy;
+
+      if (total > user.wallet.amount) {
+        throw new Error(CONTEMPLATED_ERRORS.INSUFFICIENT_POKECOINS);
       }
 
-      const {
-        wallet: { amount },
-        id: userId,
-      } = user;
-
-      const {
-        stock: { price },
-        id: itemId,
-      } = item;
+      const { amount, userId } = user.wallet;
 
       const updateWallet = prisma.wallet.update({
-        data: { amount: amount - price },
+        data: { amount: amount - total },
         where: { userId },
       });
 
-      const updateInventory = prisma.userItem.upsert({
-        where: { userId_itemId: { userId, itemId } },
-        create: { userId, itemId, units: 1 },
-        update: { units: { increment: 1 } },
+      const updateInventory = products.map((product) => {
+        const itemId = product.item.id;
+        const units = product.units;
+
+        return prisma.userItem.upsert({
+          where: { userId_itemId: { userId, itemId } },
+          create: { userId, itemId, units },
+          update: { units: { increment: units } },
+        });
       });
 
-      await prisma.$transaction([updateWallet, updateInventory]);
+      await prisma.$transaction([updateWallet, ...updateInventory]);
 
-      return item;
+      return true;
     } catch (error: any) {
-      error.message = "No se pudo realizar la compra";
+      if (!Object.values(CONTEMPLATED_ERRORS).includes(error.message)) {
+        error.message = "No se pudo realizar la compra";
+      }
       throw error;
     }
   }

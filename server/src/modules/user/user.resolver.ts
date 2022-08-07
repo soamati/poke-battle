@@ -1,10 +1,19 @@
-import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
-import { Context } from "../../types";
-import { UserInput } from "./types";
+import {
+  Arg,
+  Ctx,
+  Mutation,
+  Query,
+  Resolver,
+  UseMiddleware,
+} from "type-graphql";
+import { Context, CurrentUserType } from "../../types";
+import { UserInput, WalletType } from "./types";
 import { UserType } from "./user.schema";
 import { compare, hash } from "bcrypt";
 import { cookieOptions, createAccessToken } from "./util";
 import { verify } from "jsonwebtoken";
+import { IsAuth } from "../../middlewares/IsAuth";
+import { CurrentUser } from "../../decorators/CurrentUser";
 
 const SIGNIN_ERROR = "Credenciales incorrectas";
 
@@ -82,5 +91,18 @@ export class UserResolver {
       console.log(error);
       return false;
     }
+  }
+
+  @UseMiddleware(IsAuth)
+  @Query(() => WalletType, { nullable: true })
+  async wallet(
+    @CurrentUser() user: CurrentUserType,
+    @Ctx() { prisma }: Context
+  ) {
+    const wallet = await prisma.wallet.findFirst({
+      where: { userId: user.id },
+    });
+
+    return wallet;
   }
 }

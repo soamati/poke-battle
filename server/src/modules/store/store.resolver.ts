@@ -16,11 +16,13 @@ export class StoreResolver {
     return pokemons.store(skip, user.id);
   }
 
+  @UseMiddleware(IsAuth)
   @Query(() => [ItemStore])
   async itemStore(
     @Ctx() { items }: Context,
-    @Arg("skip", { defaultValue: 0 }) skip: number
+    @Arg("skip", () => Int, { defaultValue: 0 }) skip: number,
+    @CurrentUser() user: CurrentUserType
   ): Promise<ItemStore[]> {
-    return items.store(skip);
+    return items.store(skip, user.id);
   }
 }

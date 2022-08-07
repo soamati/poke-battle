@@ -11,12 +11,12 @@ import {
 } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import React from "react";
-import Form from "src/components/Form";
-import Page from "src/components/Page";
-import useFocus from "src/hooks/useFocus";
-import useInput from "src/hooks/useInput";
-import withAuthGSSP from "src/lib/withAuthGSSP";
 import NextLink from "next/link";
+import Form from "@/components/Form";
+import Page from "@/components/Page";
+import useFocus from "@/hooks/useFocus";
+import useInput from "@/hooks/useInput";
+import withAuthGSSP from "@/lib/withAuthGSSP";
 
 const SignupPage = () => {
   const borderColor = useColorModeValue("gray.200", "gray.700");
