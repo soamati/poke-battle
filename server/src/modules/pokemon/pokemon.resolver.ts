@@ -10,13 +10,17 @@ import {
 import { CurrentUser } from "../../decorators/CurrentUser";
 import { IsAuth } from "../../middlewares/IsAuth";
 import { Context, CurrentUserType } from "../../types";
-import { PokedexItem, PokemonType } from "./pokemon.schema";
+import { PaginatedPokemon, PokedexItem, PokemonType } from "./pokemon.schema";
 
 @Resolver()
 export class PokemonResolver {
-  @Query(() => [PokemonType])
-  pokemons(@Ctx() { pokemons }: Context) {
-    return pokemons.find();
+  @Query(() => PaginatedPokemon)
+  pokemons(
+    @Ctx() { pokemons }: Context,
+    @Arg("page", () => Int, { defaultValue: 1 }) _page: number
+  ) {
+    const page = _page > 0 ? _page : 1;
+    return pokemons.findPaginated(page);
   }
 
   @UseMiddleware(IsAuth)

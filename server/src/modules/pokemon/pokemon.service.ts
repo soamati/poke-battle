@@ -1,7 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { readFileSync } from "fs";
 import { join } from "path";
-import { PokemonType } from "./pokemon.schema";
+import { PAGE_SIZE } from "../../constants";
+import { PaginatedPokemon, PokemonType } from "./pokemon.schema";
 
 export class PokemonService {
   prisma: PrismaClient;
@@ -39,8 +40,12 @@ export class PokemonService {
     await this.prisma.$transaction(create);
   }
 
-  find() {
-    return this.prisma.pokemon.findMany();
+  find(skip: number) {
+    return this.prisma.pokemon.findMany({
+      include: { _count: true },
+      skip,
+      take: 20,
+    });
   }
 
   findById(id: number) {
@@ -77,5 +82,37 @@ export class PokemonService {
     });
 
     return store;
+  }
+
+  async findPaginated(page: number): Promise<PaginatedPokemon> {
+    const findPokemons = this.prisma.pokemon.findMany({
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+    });
+
+    const countPokemons = this.prisma.pokemon.count();
+
+    const [results, count] = await this.prisma.$transaction([
+      findPokemons,
+      countPokemons,
+    ]);
+
+    const pages = Math.ceil(count / PAGE_SIZE);
+
+    if (results.length < 1) {
+      return {
+        info: { count, pages, next: null, prev: null },
+        results: [],
+      };
+    }
+
+    const info: PaginatedPokemon["info"] = {
+      count,
+      pages,
+      next: page < pages ? page + 1 : null,
+      prev: page > 1 ? page - 1 : null,
+    };
+
+    return { results, info };
   }
 }

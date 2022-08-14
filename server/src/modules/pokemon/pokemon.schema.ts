@@ -1,5 +1,6 @@
 import { Pokemon } from "@prisma/client";
 import { Field, ObjectType } from "type-graphql";
+import { Paginated } from "../../types";
 
 @ObjectType("Pokemon")
 export class PokemonType implements Partial<Pokemon> {
@@ -29,4 +30,10 @@ export class PokedexItem {
 
   @Field()
   luck: number;
+}
+
+@ObjectType("PaginatedPokemon")
+export class PaginatedPokemon extends Paginated {
+  @Field(() => [PokemonType])
+  results: PokemonType[];
 }
