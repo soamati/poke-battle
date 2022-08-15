@@ -9,19 +9,19 @@ function useObserver<T extends HTMLElement>(
   deps: any[] = []
 ) {
   const ref = React.useRef<T | null>(null);
-  const observerRef = React.useRef(new IntersectionObserver(callback, options));
+
+  const observer = React.useMemo(() => {
+    return new IntersectionObserver(callback, options);
+  }, [callback, options]);
 
   React.useEffect(() => {
     const target = ref.current;
     if (!target) return;
 
-    const observer = observerRef.current;
     observer.observe(target);
 
-    return function cleanup() {
-      if (observer) {
-        observer.disconnect();
-      }
+    return () => {
+      observer.disconnect();
     };
     // eslint-disable-next-line
   }, [...deps]);

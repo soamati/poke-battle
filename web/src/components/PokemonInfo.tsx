@@ -18,6 +18,7 @@ type Props = {
 
 const PokemonInfo = ({ pokemon }: Props) => {
   const { fg } = useColors();
+
   return (
     <Box borderColor={fg} borderWidth={1} rounded="md" p={4}>
       <Stack align="center" spacing={4}>
