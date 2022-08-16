@@ -14,9 +14,10 @@ import useColors from "@/hooks/useColors";
 
 type Props = {
   pokemon: Pokemon;
+  onPick: (pokemon: Pokemon) => void;
 };
 
-const PokemonInfo = ({ pokemon }: Props) => {
+const PokemonInfo = ({ pokemon, onPick }: Props) => {
   const { fg } = useColors();
 
   return (
@@ -40,7 +41,7 @@ const PokemonInfo = ({ pokemon }: Props) => {
             <Badge colorScheme="blue">DEF: {pokemon.defense}</Badge>
           </WrapItem>
         </Wrap>
-        <Button>Desafiar</Button>
+        <Button onClick={() => onPick(pokemon)}>Desafiar</Button>
       </Stack>
     </Box>
   );
