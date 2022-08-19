@@ -27,7 +27,7 @@ const SignupPage = () => {
   const [password, onChangePassword] = useInput();
 
   return (
-    <Page full>
+    <Page full showHeader={false} showNav={false}>
       <Center flex={1}>
         <Form w="full">
           <Stack

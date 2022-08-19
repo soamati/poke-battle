@@ -12,6 +12,10 @@ mutation Signin($data: UserInput!) {
   }
 }
 
+mutation Signout {
+  signout
+}
+
 query Wallet {
   wallet {
     amount

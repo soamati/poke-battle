@@ -3,12 +3,11 @@ import dynamic from "next/dynamic";
 import Page from "@/components/Page";
 import Wallet from "@/features/user/Wallet";
 import withAuthGSSP from "@/lib/withAuthGSSP";
+import Link from "next/link";
 import { WhoamiQuery } from "@/generated";
 import { Is } from "@/types";
 import { Button, HStack, Icon, Stack } from "@chakra-ui/react";
-import useColors from "@/hooks/useColors";
 import { RiSwordFill } from "react-icons/ri";
-import Link from "next/link";
 
 const Store = dynamic(() => import("src/features/store/PokemonStore"), {
   ssr: false,
@@ -19,21 +18,10 @@ type Props = {
 };
 
 const PokemonStorePage = ({ user: _ }: Props) => {
-  const colors = useColors();
   return (
     <Page>
-      <Stack py={8}>
-        <HStack
-          justify="space-between"
-          position="sticky"
-          top={2}
-          bg={colors.bg}
-          zIndex={1000}
-          borderWidth={1}
-          borderColor={colors.fg}
-          px={4}
-          rounded="md"
-        >
+      <Stack>
+        <HStack justify="space-between" py={2}>
           <Wallet />
 
           <Link href="/store/item" passHref>

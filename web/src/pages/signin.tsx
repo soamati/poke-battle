@@ -51,7 +51,7 @@ const SigninPage = (props: Props) => {
   };
 
   return (
-    <Page full>
+    <Page full showHeader={false} showNav={false}>
       <Center flex={1}>
         <Form onSubmit={onSignin} w="full">
           <Stack

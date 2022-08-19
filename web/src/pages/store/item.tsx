@@ -11,7 +11,7 @@ type Props = {};
 const ItemStorePage = (props: Props) => {
   return (
     <Page>
-      <Stack py={8}>
+      <Stack>
         <CartProvider>
           <Cart />
           <ItemStore />

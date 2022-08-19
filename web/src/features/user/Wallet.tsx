@@ -1,15 +1,20 @@
 import React from "react";
 import client from "@/client";
-import { HStack, Tag, Text } from "@chakra-ui/react";
+import { Center, HStack, Spinner, Tag, Text } from "@chakra-ui/react";
 import { useWalletQuery } from "@/generated";
 
 const Wallet = () => {
   const { data } = useWalletQuery(client);
 
-  if (!data?.wallet) return null;
+  if (!data || !data.wallet)
+    return (
+      <Center>
+        <Spinner size="sm" />
+      </Center>
+    );
 
   return (
-    <HStack py={4} justify="end">
+    <HStack justify="end">
       <Text>Pokécoins disponibles:</Text>
       <Tag colorScheme="yellow">{data.wallet.amount}</Tag>
     </HStack>

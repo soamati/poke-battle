@@ -8,10 +8,10 @@ import {
   Button,
   Image,
   Box,
-  useColorModeValue,
 } from "@chakra-ui/react";
 import useBuyPokemon from "./useBuyPokemon";
 import { PokemonStoreQuery } from "@/generated";
+import useColors from "@/hooks/useColors";
 
 type Props = {
   pokemon: PokemonStoreQuery["pokemonStore"][number];
@@ -20,7 +20,7 @@ type Props = {
 const PokemonStoreItem = ({
   pokemon: { pokemon, price, isOwned: _isOwned },
 }: Props) => {
-  const borderColor = useColorModeValue("gray.200", "gray.700");
+  const { fg } = useColors();
   const [isOwned, setIsOwned] = React.useState(_isOwned);
   const [buy, isBuying] = useBuyPokemon();
 
@@ -34,7 +34,7 @@ const PokemonStoreItem = ({
   };
 
   return (
-    <Box borderColor={borderColor} borderWidth={1} rounded="md" p={4}>
+    <Box borderColor={fg} borderWidth={1} rounded="sm" p={4}>
       <Stack align="center" spacing={4}>
         <Heading size="sm">{pokemon.name}</Heading>
         <Image

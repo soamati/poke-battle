@@ -51,17 +51,7 @@ const Cart = () => {
 
   return (
     <>
-      <HStack
-        justify="space-between"
-        position="sticky"
-        top={2}
-        bg={colors.bg}
-        zIndex={1000}
-        borderWidth={1}
-        borderColor={colors.fg}
-        px={4}
-        rounded="md"
-      >
+      <HStack justify="space-between" py={2}>
         <Wallet />
 
         <HStack>

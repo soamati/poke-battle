@@ -41,7 +41,7 @@ const PokemonStore = () => {
 
   return (
     <>
-      <SimpleGrid minChildWidth="250px" spacing={4}>
+      <SimpleGrid minChildWidth="250px" spacing={2}>
         {data.pages.map((page, i) => (
           <React.Fragment key={i}>
             {page.pokemonStore.map((pokemon) => (

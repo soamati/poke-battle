@@ -203,6 +203,11 @@ export type SigninMutationVariables = Exact<{
 
 export type SigninMutation = { signin: { id: number, username: string } };
 
+export type SignoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SignoutMutation = { signout: boolean };
+
 export type WalletQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -453,6 +458,24 @@ export const useSigninMutation = <
     useMutation<SigninMutation, TError, SigninMutationVariables, TContext>(
       ['Signin'],
       (variables?: SigninMutationVariables) => fetcher<SigninMutation, SigninMutationVariables>(client, SigninDocument, variables, headers)(),
+      options
+    );
+export const SignoutDocument = `
+    mutation Signout {
+  signout
+}
+    `;
+export const useSignoutMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<SignoutMutation, TError, SignoutMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<SignoutMutation, TError, SignoutMutationVariables, TContext>(
+      ['Signout'],
+      (variables?: SignoutMutationVariables) => fetcher<SignoutMutation, SignoutMutationVariables>(client, SignoutDocument, variables, headers)(),
       options
     );
 export const WalletDocument = `

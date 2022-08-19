@@ -32,7 +32,7 @@ const Item = ({ item, price, onInventory }: Props) => {
       borderWidth={1}
       align="center"
       p="4"
-      rounded="md"
+      rounded="sm"
       spacing="4"
     >
       <Heading size="sm">{item.name}</Heading>

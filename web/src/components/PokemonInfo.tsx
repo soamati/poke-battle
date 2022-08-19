@@ -21,7 +21,7 @@ const PokemonInfo = ({ pokemon, onPick }: Props) => {
   const { fg } = useColors();
 
   return (
-    <Box borderColor={fg} borderWidth={1} rounded="md" p={4}>
+    <Box borderColor={fg} borderWidth={1} rounded="sm" p={4}>
       <Stack align="center" spacing={4}>
         <Heading size="sm">{pokemon.name}</Heading>
         <Image
