@@ -1,10 +1,10 @@
 import type { NextPage } from "next";
 import React from "react";
-import Page from "@/components/Page";
 import withAuthGSSP from "@/lib/withAuthGSSP";
 import dynamic from "next/dynamic";
 import { WhoamiQuery } from "@/generated";
 import { Is } from "@/types";
+import Page from "@/layout/Page";
 
 const PokemonList = dynamic(() => import("@/features/pokemon/PokemonList"), {
   ssr: false,

@@ -1,5 +1,4 @@
 import React from "react";
-import Page from "@/components/Page";
 import {
   Box,
   Button,
@@ -95,16 +94,4 @@ const Roulette = () => {
   );
 };
 
-type Props = {};
-
-const BattlePage = (props: Props) => {
-  return (
-    <Page full>
-      <Center flex={1}>
-        <Roulette />
-      </Center>
-    </Page>
-  );
-};
-
-export default BattlePage;
+export default Roulette;

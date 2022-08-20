@@ -1,0 +1,13 @@
+query Pokedex {
+  pokedex {
+    pokemon {
+      id
+      name
+      attack
+      defense
+      health
+      image
+    }
+    luck
+  }
+}

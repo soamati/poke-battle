@@ -27,3 +27,14 @@ query Pokemons($page: Int!) {
     }
   }
 }
+
+query Pokemon($id: Int!) {
+  pokemon(id: $id) {
+    id
+    name
+    attack
+    defense
+    health
+    image
+  }
+}

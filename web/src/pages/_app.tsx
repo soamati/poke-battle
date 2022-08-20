@@ -16,7 +16,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Head>
 
       <QueryClientProvider client={client}>
-        <ChakraProvider theme={theme}>
+        <ChakraProvider theme={theme} resetCSS>
           <Component {...pageProps} />
         </ChakraProvider>
 

@@ -1,12 +1,12 @@
 import React from "react";
 import { Box, Button, Flex, HStack, Icon, Text } from "@chakra-ui/react";
 import useColors from "@/hooks/useColors";
-import ToggleColorMode from "./ToggleColorMode";
 import { MdCatchingPokemon } from "react-icons/md";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
 import { useSignoutMutation } from "@/generated";
 import client from "@/client";
+import ToggleColorMode from "@/components/ToggleColorMode";
 
 type Props = {};
 

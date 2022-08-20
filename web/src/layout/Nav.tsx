@@ -43,7 +43,7 @@ const Nav = () => {
         bg={bg}
         borderWidth={1}
         borderColor={fg}
-        rounded="xl"
+        rounded="sm"
         maxW="container.sm"
         mx="auto"
         mb="2"

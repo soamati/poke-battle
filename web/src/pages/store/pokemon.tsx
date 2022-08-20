@@ -1,6 +1,5 @@
 import React from "react";
 import dynamic from "next/dynamic";
-import Page from "@/components/Page";
 import Wallet from "@/features/user/Wallet";
 import withAuthGSSP from "@/lib/withAuthGSSP";
 import Link from "next/link";
@@ -8,6 +7,7 @@ import { WhoamiQuery } from "@/generated";
 import { Is } from "@/types";
 import { Button, HStack, Icon, Stack } from "@chakra-ui/react";
 import { RiSwordFill } from "react-icons/ri";
+import Page from "@/layout/Page";
 
 const Store = dynamic(() => import("src/features/store/PokemonStore"), {
   ssr: false,

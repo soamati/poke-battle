@@ -14,6 +14,11 @@ import { PaginatedPokemon, PokedexItem, PokemonType } from "./pokemon.schema";
 
 @Resolver()
 export class PokemonResolver {
+  @Query(() => PokemonType, { nullable: true })
+  pokemon(@Arg("id", () => Int) id: number, @Ctx() { prisma }: Context) {
+    return prisma.pokemon.findFirst({ where: { id } });
+  }
+
   @Query(() => PaginatedPokemon)
   pokemons(
     @Ctx() { pokemons }: Context,

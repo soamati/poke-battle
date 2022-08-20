@@ -111,6 +111,7 @@ export type Query = {
   inventory: Array<InventoryItem>;
   itemStore: Array<ItemStore>;
   pokedex: Array<PokedexItem>;
+  pokemon?: Maybe<Pokemon>;
   pokemonStore: Array<PokemonStore>;
   pokemons: PaginatedPokemon;
   wallet?: Maybe<Wallet>;
@@ -125,6 +126,11 @@ export type QueryItemStoreArgs = {
 
 export type QueryPokedexArgs = {
   id?: InputMaybe<Scalars['Float']>;
+};
+
+
+export type QueryPokemonArgs = {
+  id: Scalars['Int'];
 };
 
 
@@ -163,6 +169,11 @@ export type BuyItemMutationVariables = Exact<{
 
 export type BuyItemMutation = { buyItems: boolean };
 
+export type PokedexQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PokedexQuery = { pokedex: Array<{ luck: number, pokemon: { id: number, name: string, attack: number, defense: number, health: number, image: string } }> };
+
 export type BuyPokemonMutationVariables = Exact<{
   id: Scalars['Int'];
 }>;
@@ -176,6 +187,13 @@ export type PokemonsQueryVariables = Exact<{
 
 
 export type PokemonsQuery = { pokemons: { info: { count: number, pages: number, next?: number | null, prev?: number | null }, results: Array<{ id: number, name: string, image: string, attack: number, defense: number, health: number }> } };
+
+export type PokemonQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type PokemonQuery = { pokemon?: { id: number, name: string, attack: number, defense: number, health: number, image: string } | null };
 
 export type PokemonStoreQueryVariables = Exact<{
   skip: Scalars['Int'];
@@ -232,6 +250,51 @@ export const useBuyItemMutation = <
       (variables?: BuyItemMutationVariables) => fetcher<BuyItemMutation, BuyItemMutationVariables>(client, BuyItemDocument, variables, headers)(),
       options
     );
+export const PokedexDocument = `
+    query Pokedex {
+  pokedex {
+    pokemon {
+      id
+      name
+      attack
+      defense
+      health
+      image
+    }
+    luck
+  }
+}
+    `;
+export const usePokedexQuery = <
+      TData = PokedexQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: PokedexQueryVariables,
+      options?: UseQueryOptions<PokedexQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<PokedexQuery, TError, TData>(
+      variables === undefined ? ['Pokedex'] : ['Pokedex', variables],
+      fetcher<PokedexQuery, PokedexQueryVariables>(client, PokedexDocument, variables, headers),
+      options
+    );
+export const useInfinitePokedexQuery = <
+      TData = PokedexQuery,
+      TError = unknown
+    >(
+      _pageParamKey: keyof PokedexQueryVariables,
+      client: GraphQLClient,
+      variables?: PokedexQueryVariables,
+      options?: UseInfiniteQueryOptions<PokedexQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useInfiniteQuery<PokedexQuery, TError, TData>(
+      variables === undefined ? ['Pokedex.infinite'] : ['Pokedex.infinite', variables],
+      (metaData) => fetcher<PokedexQuery, PokedexQueryVariables>(client, PokedexDocument, {...variables, ...(metaData.pageParam ?? {})}, headers)(),
+      options
+    );
+
 export const BuyPokemonDocument = `
     mutation BuyPokemon($id: Int!) {
   buyPokemon(id: $id) {
@@ -304,6 +367,48 @@ export const useInfinitePokemonsQuery = <
     useInfiniteQuery<PokemonsQuery, TError, TData>(
       ['Pokemons.infinite', variables],
       (metaData) => fetcher<PokemonsQuery, PokemonsQueryVariables>(client, PokemonsDocument, {...variables, ...(metaData.pageParam ?? {})}, headers)(),
+      options
+    );
+
+export const PokemonDocument = `
+    query Pokemon($id: Int!) {
+  pokemon(id: $id) {
+    id
+    name
+    attack
+    defense
+    health
+    image
+  }
+}
+    `;
+export const usePokemonQuery = <
+      TData = PokemonQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: PokemonQueryVariables,
+      options?: UseQueryOptions<PokemonQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<PokemonQuery, TError, TData>(
+      ['Pokemon', variables],
+      fetcher<PokemonQuery, PokemonQueryVariables>(client, PokemonDocument, variables, headers),
+      options
+    );
+export const useInfinitePokemonQuery = <
+      TData = PokemonQuery,
+      TError = unknown
+    >(
+      _pageParamKey: keyof PokemonQueryVariables,
+      client: GraphQLClient,
+      variables: PokemonQueryVariables,
+      options?: UseInfiniteQueryOptions<PokemonQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useInfiniteQuery<PokemonQuery, TError, TData>(
+      ['Pokemon.infinite', variables],
+      (metaData) => fetcher<PokemonQuery, PokemonQueryVariables>(client, PokemonDocument, {...variables, ...(metaData.pageParam ?? {})}, headers)(),
       options
     );
 

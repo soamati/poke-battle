@@ -11,15 +11,13 @@ const PokemonList = () => {
   const { data, fetchNextPage, hasNextPage } = usePokemons();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { challenge, setRival } = useChallenge();
+  const { challenge, rival, setRival } = useChallenge();
 
   const { ref } = useObserver<HTMLDivElement>(
     ([entry]) => {
       if (!entry.isIntersecting) {
         return;
       }
-      console.log("Fetching more?");
-      console.log({ hasNextPage });
       if (hasNextPage) {
         fetchNextPage();
       }
@@ -61,6 +59,9 @@ const PokemonList = () => {
 
       <ConfirmDialog
         title="Desafiar"
+        description={`¿Seguro quieres desafiar a ${
+          rival ? rival.name : "este Pokémon"
+        }?`}
         isOpen={isOpen}
         onClose={onClose}
         onConfirm={challenge}

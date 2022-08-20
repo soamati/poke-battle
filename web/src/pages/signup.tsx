@@ -13,10 +13,10 @@ import { GetServerSideProps } from "next";
 import React from "react";
 import NextLink from "next/link";
 import Form from "@/components/Form";
-import Page from "@/components/Page";
 import useFocus from "@/hooks/useFocus";
 import useInput from "@/hooks/useInput";
 import withAuthGSSP from "@/lib/withAuthGSSP";
+import Page from "@/layout/Page";
 
 const SignupPage = () => {
   const borderColor = useColorModeValue("gray.200", "gray.700");

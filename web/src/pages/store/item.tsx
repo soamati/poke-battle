@@ -1,10 +1,10 @@
 import React from "react";
-import Page from "@/components/Page";
 import ItemStore from "@/features/store/ItemStore";
 import withAuthGSSP from "@/lib/withAuthGSSP";
 import { Stack } from "@chakra-ui/react";
 import Cart from "@/features/store/Cart";
 import CartProvider from "@/features/store/CartProvider";
+import Page from "@/layout/Page";
 
 type Props = {};
 

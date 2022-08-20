@@ -15,13 +15,13 @@ import { GetServerSideProps } from "next";
 import NextLink from "next/link";
 import client from "@/client";
 import Form from "@/components/Form";
-import Page from "@/components/Page";
 import { useSigninMutation } from "@/generated";
 import useErrorParser from "@/hooks/useErrorParser";
 import useFocus from "@/hooks/useFocus";
 import useInput from "@/hooks/useInput";
 import withAuthGSSP from "@/lib/withAuthGSSP";
 import { useRouter } from "next/router";
+import Page from "@/layout/Page";
 
 type Props = {};
 
