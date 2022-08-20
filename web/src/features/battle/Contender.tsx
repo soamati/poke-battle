@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useMemo } from "react";
 import useColors from "@/hooks/useColors";
 import { Pokemon } from "@/generated";
 import { Box, Stack, Heading, Badge, Image, HStack } from "@chakra-ui/react";
+import { useBattle } from "./BattleProvider";
 
 type Props = {
   pokemon: Pokemon;
@@ -10,20 +11,20 @@ type Props = {
 
 const Contender = ({ pokemon, isRival = false }: Props) => {
   const { fg } = useColors();
+  const { phase } = useBattle();
+
+  const color = useMemo(() => {
+    if (isRival) {
+      return "red.400";
+    }
+    return phase === "battle" ? "green.400" : fg;
+  }, [isRival, phase, fg]);
 
   return (
-    <Box
-      borderColor={isRival ? "red.400" : fg}
-      borderWidth={1}
-      rounded="sm"
-      p={2}
-      flex={1}
-    >
+    <Box borderColor={color} borderWidth={1} rounded="sm" p={2} flex={1}>
       <Stack align="center" spacing={4}>
-        <Heading size="sm" color={isRival ? "red.400" : undefined}>
-          {pokemon.name}
-        </Heading>
-        <HStack flexDirection={isRival ? "row-reverse" : "row"}>
+        <Heading size="sm">{pokemon.name}</Heading>
+        <HStack>
           <Image
             src={pokemon.image}
             alt={pokemon.name}

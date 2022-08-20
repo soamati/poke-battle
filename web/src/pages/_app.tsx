@@ -5,6 +5,7 @@ import type { AppProps } from "next/app";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ChakraProvider } from "@chakra-ui/react";
+import BattleProvider from "@/features/battle/BattleProvider";
 
 const client = new QueryClient();
 
@@ -17,7 +18,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 
       <QueryClientProvider client={client}>
         <ChakraProvider theme={theme} resetCSS>
-          <Component {...pageProps} />
+          <BattleProvider>
+            <Component {...pageProps} />
+          </BattleProvider>
         </ChakraProvider>
 
         <ReactQueryDevtools initialIsOpen={false} />
