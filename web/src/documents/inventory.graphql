@@ -1,0 +1,15 @@
+query Inventory {
+  inventory {
+    item {
+      id
+      name
+      mode
+      value
+      stat {
+        id
+        name
+      }
+    }
+    units
+  }
+}

@@ -17,7 +17,7 @@ const ItemStore = () => {
 
   return (
     <SimpleGrid minChildWidth="250px" spacing={2}>
-      {data.itemStore.map(({ item, price, onInventory }, i) => (
+      {data.itemStore.map(({ item, price, onInventory }) => (
         <Item
           key={item.id}
           item={item}

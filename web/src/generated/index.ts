@@ -1,6 +1,6 @@
 import { GraphQLClient } from 'graphql-request';
 import { RequestInit } from 'graphql-request/dist/types.dom';
-import { useMutation, useQuery, useInfiniteQuery, UseMutationOptions, UseQueryOptions, UseInfiniteQueryOptions } from '@tanstack/react-query';
+import { useQuery, useInfiniteQuery, useMutation, UseQueryOptions, UseInfiniteQueryOptions, UseMutationOptions } from '@tanstack/react-query';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -162,6 +162,11 @@ export type Wallet = {
   amount: Scalars['Float'];
 };
 
+export type InventoryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type InventoryQuery = { inventory: Array<{ units: number, item: { id: number, name: string, mode: string, value: number, stat: { id: number, name: string } } }> };
+
 export type BuyItemMutationVariables = Exact<{
   data: BuyItemInput;
 }>;
@@ -231,6 +236,53 @@ export type WalletQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type WalletQuery = { wallet?: { amount: number } | null };
 
+
+export const InventoryDocument = `
+    query Inventory {
+  inventory {
+    item {
+      id
+      name
+      mode
+      value
+      stat {
+        id
+        name
+      }
+    }
+    units
+  }
+}
+    `;
+export const useInventoryQuery = <
+      TData = InventoryQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: InventoryQueryVariables,
+      options?: UseQueryOptions<InventoryQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<InventoryQuery, TError, TData>(
+      variables === undefined ? ['Inventory'] : ['Inventory', variables],
+      fetcher<InventoryQuery, InventoryQueryVariables>(client, InventoryDocument, variables, headers),
+      options
+    );
+export const useInfiniteInventoryQuery = <
+      TData = InventoryQuery,
+      TError = unknown
+    >(
+      _pageParamKey: keyof InventoryQueryVariables,
+      client: GraphQLClient,
+      variables?: InventoryQueryVariables,
+      options?: UseInfiniteQueryOptions<InventoryQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useInfiniteQuery<InventoryQuery, TError, TData>(
+      variables === undefined ? ['Inventory.infinite'] : ['Inventory.infinite', variables],
+      (metaData) => fetcher<InventoryQuery, InventoryQueryVariables>(client, InventoryDocument, {...variables, ...(metaData.pageParam ?? {})}, headers)(),
+      options
+    );
 
 export const BuyItemDocument = `
     mutation BuyItem($data: BuyItemInput!) {

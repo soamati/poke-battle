@@ -7,6 +7,8 @@ import { Pokemon, PokemonDocument } from "@/generated";
 import { useBattle } from "@/features/battle/BattleProvider";
 import { Stack, Text } from "@chakra-ui/react";
 import Versus from "@/features/battle/Versus";
+import Roulette from "@/features/battle/Roulette";
+import Inventory from "@/components/Inventory";
 
 type Props = {
   pokemon: Pokemon;
@@ -23,16 +25,28 @@ const BattlePage = ({ pokemon }: Props) => {
 
   return (
     <Page full>
-      <Stack spacing={4} pt={2}>
+      <Stack spacing={8} pt={2}>
         {phase === "selection" ? (
-          <Text>Elige un Pokémon para enfrentar a tu rival</Text>
+          <Text textAlign="center">
+            Elige un Pokémon para enfrentar a tu rival
+          </Text>
         ) : (
-          <Text>PokéBattle!</Text>
+          <Text textAlign="center">¡PokéBattle!</Text>
         )}
 
         <Versus rival={pokemon} />
 
-        {phase === "selection" ? <Lobby rival={pokemon} /> : <div>battle!</div>}
+        {phase === "selection" ? (
+          <Lobby rival={pokemon} />
+        ) : (
+          <>
+            <Roulette />
+            <Stack>
+              <Text>Agrega items a la ruleta</Text>
+              <Inventory />
+            </Stack>
+          </>
+        )}
       </Stack>
     </Page>
   );

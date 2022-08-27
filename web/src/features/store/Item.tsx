@@ -1,26 +1,12 @@
 import React from "react";
-import { Stack, Heading, Button, Tag } from "@chakra-ui/react";
 import ItemImage from "@/components/ItemImage";
+import useColors from "@/hooks/useColors";
+import ItemDescription from "@/components/ItemDescription";
+import { Stack, Heading, Button, Tag } from "@chakra-ui/react";
 import { ItemStoreQuery } from "@/generated";
 import { useCartContext } from "./CartProvider";
-import useColors from "@/hooks/useColors";
 
 type Props = ItemStoreQuery["itemStore"][number];
-
-function getDescription(item: Props["item"]) {
-  const stat =
-    item.stat.name === "ATK"
-      ? "el ataque"
-      : item.stat.name === "DEF"
-      ? "la defensa"
-      : "la salud";
-
-  const description = `Aumenta ${stat} en ${item.value}${
-    item.mode === "PERCENTAGE" ? "%" : ""
-  }`;
-
-  return description;
-}
 
 const Item = ({ item, price, onInventory }: Props) => {
   const colors = useColors();
@@ -37,20 +23,8 @@ const Item = ({ item, price, onInventory }: Props) => {
     >
       <Heading size="sm">{item.name}</Heading>
       <ItemImage item={item} />
-
-      <Tag
-        colorScheme={
-          item.stat.name === "ATK"
-            ? "red"
-            : item.stat.name === "DEF"
-            ? "blue"
-            : "green"
-        }
-      >
-        {getDescription(item)}
-      </Tag>
+      <ItemDescription item={item} />
       <Heading size="sm">Precio: {price} PC</Heading>
-
       <Button
         size="sm"
         colorScheme="yellow"
@@ -58,7 +32,6 @@ const Item = ({ item, price, onInventory }: Props) => {
       >
         Agregar al carrito
       </Button>
-
       <Tag colorScheme="yellow">En inventario: {onInventory}</Tag>
     </Stack>
   );
