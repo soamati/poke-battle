@@ -22,7 +22,7 @@ type Props = {
 const Lobby = ({ rival }: Props) => {
   const { fg } = useColors();
   const { data, isLoading } = usePokedexQuery(client);
-  const { selected, setSelected, startBattle } = useBattle();
+  const [{ selected }, dispatch] = useBattle();
 
   return (
     <>
@@ -31,7 +31,7 @@ const Lobby = ({ rival }: Props) => {
           size="sm"
           colorScheme="red"
           isDisabled={!selected}
-          onClick={startBattle}
+          onClick={() => dispatch({ type: "start" })}
         >
           Empezar!
         </Button>
@@ -73,7 +73,7 @@ const Lobby = ({ rival }: Props) => {
                 <Button
                   size="xs"
                   colorScheme="yellow"
-                  onClick={() => setSelected(owned)}
+                  onClick={() => dispatch({ type: "select", payload: owned })}
                 >
                   Elegir
                 </Button>

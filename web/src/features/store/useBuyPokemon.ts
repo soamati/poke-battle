@@ -15,6 +15,8 @@ export default function useBuyPokemon() {
       toast({
         title: "Pokémon adquirido!",
         description: `Ahora contás con ${buyPokemon.name}`,
+        isClosable: true,
+        position: "top-right",
       });
       queryClient.invalidateQueries(["Wallet"]);
     },

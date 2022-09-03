@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Center,
+  Img,
   SimpleGrid,
   Stack,
   Text,
@@ -10,6 +11,9 @@ import {
 } from "@chakra-ui/react";
 import { motion, useAnimation } from "framer-motion";
 import { ArrowDownIcon } from "@chakra-ui/icons";
+import { useBattle } from "./BattleProvider";
+import useColors from "@/hooks/useColors";
+import ItemImage from "@/components/ItemImage";
 
 const size = "100px";
 
@@ -32,6 +36,9 @@ const Roulette = () => {
   const controls = useAnimation();
   const [isSpinning, { on, off }] = useBoolean(false);
   const [rotation] = React.useState(() => getRotation());
+
+  const { fg } = useColors();
+  const [{ itemSlots, rivalSlots }, dispatch] = useBattle();
 
   const start = React.useCallback(async () => {
     on();
@@ -61,24 +68,72 @@ const Roulette = () => {
           }}
         >
           <SimpleGrid columns={2} spacing={1} rounded="full" overflow="hidden">
-            <Box w={size} h={size} bg="green.400">
+            {/* User item A */}
+            <Box
+              w={size}
+              h={size}
+              bg="green.700"
+              cursor="pointer"
+              _hover={{ backgroundColor: fg }}
+              onClick={() => dispatch({ type: "removeItem", payload: "a" })}
+            >
               <Center h="full">
-                <Text>1</Text>
+                {itemSlots.a !== null && (
+                  <Stack align="center" ml="3" mt="3">
+                    <ItemImage item={itemSlots.a} boxSize="20px" noPadding />
+                    <Text fontWeight="semibold" fontSize="xs">
+                      {itemSlots.a.name}
+                    </Text>
+                  </Stack>
+                )}
               </Center>
             </Box>
-            <Box w={size} h={size} bg="red.400">
+
+            {/* Rival Items */}
+            <Box w={size} h={size} bg="red.500">
               <Center h="full">
-                <Text>2</Text>
+                {rivalSlots.a !== null && (
+                  <Stack align="center" mr="3" mt="3">
+                    <ItemImage item={rivalSlots.a} boxSize="20px" noPadding />
+                    <Text fontWeight="semibold" fontSize="xs">
+                      {rivalSlots.a.name}
+                    </Text>
+                  </Stack>
+                )}
               </Center>
             </Box>
-            <Box w={size} h={size} bg="green.400">
+
+            <Box w={size} h={size} bg="red.500">
               <Center h="full">
-                <Text>3</Text>
+                {rivalSlots.b !== null && (
+                  <Stack align="center" ml="3" mb="3">
+                    <Text fontWeight="semibold" fontSize="xs">
+                      {rivalSlots.b.name}
+                    </Text>
+                    <ItemImage item={rivalSlots.b} boxSize="20px" noPadding />
+                  </Stack>
+                )}
               </Center>
             </Box>
-            <Box w={size} h={size} bg="red.400">
+
+            {/* User item B */}
+            <Box
+              w={size}
+              h={size}
+              bg="green.700"
+              cursor="pointer"
+              _hover={{ backgroundColor: fg }}
+              onClick={() => dispatch({ type: "removeItem", payload: "b" })}
+            >
               <Center h="full">
-                <Text>4</Text>
+                {itemSlots.b !== null && (
+                  <Stack align="center" mr="3" mb="3">
+                    <Text fontWeight="semibold" fontSize="xs">
+                      {itemSlots.b.name}
+                    </Text>
+                    <ItemImage item={itemSlots.b} boxSize="20px" noPadding />
+                  </Stack>
+                )}
               </Center>
             </Box>
           </SimpleGrid>

@@ -15,18 +15,18 @@ type Props = {
 };
 
 const BattlePage = ({ pokemon }: Props) => {
-  const { phase, resetBattle } = useBattle();
+  const [state, dispatch] = useBattle();
 
   useEffect(() => {
     return () => {
-      resetBattle();
+      dispatch({ type: "reset" });
     };
-  }, [resetBattle]);
+  }, [dispatch]);
 
   return (
     <Page full>
       <Stack spacing={8} pt={2}>
-        {phase === "selection" ? (
+        {state.phase === "selection" ? (
           <Text textAlign="center">
             Elige un Pokémon para enfrentar a tu rival
           </Text>
@@ -36,7 +36,7 @@ const BattlePage = ({ pokemon }: Props) => {
 
         <Versus rival={pokemon} />
 
-        {phase === "selection" ? (
+        {state.phase === "selection" ? (
           <Lobby rival={pokemon} />
         ) : (
           <>

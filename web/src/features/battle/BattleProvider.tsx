@@ -1,39 +1,86 @@
-import { Pokemon } from "@/generated";
+import { Item, Pokemon } from "@/generated";
 import {
   createContext,
+  Dispatch,
   PropsWithChildren,
-  useCallback,
+  Reducer,
   useContext,
-  useState,
+  useReducer,
 } from "react";
 
-type Battle = {
+type BattleState = {
   selected: Pokemon | null;
-  setSelected: (selection: Pokemon) => void;
   phase: "selection" | "battle";
-  startBattle: () => void;
-  resetBattle: () => void;
+  itemSlots: {
+    a: Item | null;
+    b: Item | null;
+  };
+  rivalSlots: {
+    a: Item | null;
+    b: Item | null;
+  };
 };
 
-const BattleContext = createContext<Battle | null>(null);
+type BattleAction = {
+  type: "select" | "start" | "reset" | "addItem" | "removeItem";
+  payload?: any;
+};
+
+const BattleContext = createContext<
+  [BattleState, Dispatch<BattleAction>] | null
+>(null);
+
+const battleReducer: Reducer<BattleState, BattleAction> = (state, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case "select":
+      return { ...state, selected: payload };
+
+    case "start":
+      return { ...state, phase: "battle" };
+
+    case "reset":
+      return { ...state, selected: null, phase: "selection" };
+
+    case "addItem":
+      if (state.itemSlots.a !== null && state.itemSlots.b !== null) {
+        break;
+      }
+      let slot = state.itemSlots.a === null ? "a" : "b";
+      return {
+        ...state,
+        itemSlots: { ...state.itemSlots, [slot]: payload.item },
+        rivalSlots: { ...state.rivalSlots, [slot]: payload.rivalItem },
+      };
+
+    case "removeItem":
+      return {
+        ...state,
+        itemSlots: { ...state.itemSlots, [payload]: null },
+        rivalSlots: { ...state.rivalSlots, [payload]: null },
+      };
+  }
+  return { ...state };
+};
+
+const initialState: BattleState = {
+  selected: null,
+  phase: "selection",
+  itemSlots: {
+    a: null,
+    b: null,
+  },
+  rivalSlots: {
+    a: null,
+    b: null,
+  },
+};
 
 const BattleProvider = ({ children }: PropsWithChildren) => {
-  const [selected, setSelected] = useState<Pokemon | null>(null);
-  const [phase, setPhase] = useState<Battle["phase"]>("selection");
-
-  const startBattle = useCallback(() => {
-    setPhase("battle");
-  }, []);
-
-  const resetBattle = useCallback(() => {
-    setSelected(null);
-    setPhase("selection");
-  }, []);
+  const [state, dispatch] = useReducer(battleReducer, initialState);
 
   return (
-    <BattleContext.Provider
-      value={{ selected, setSelected, phase, startBattle, resetBattle }}
-    >
+    <BattleContext.Provider value={[state, dispatch]}>
       {children}
     </BattleContext.Provider>
   );

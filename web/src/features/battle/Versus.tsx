@@ -11,7 +11,7 @@ type Props = {
 };
 
 const Versus = ({ rival }: Props) => {
-  const { selected } = useBattle();
+  const [{ selected }] = useBattle();
 
   return (
     <Flex gap={2}>

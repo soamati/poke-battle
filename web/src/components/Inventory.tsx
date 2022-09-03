@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useCallback } from "react";
 import client from "@/client";
-import { useInventoryQuery } from "@/generated";
+import { Item, useInventoryQuery } from "@/generated";
 import {
   Button,
   Center,
@@ -13,10 +13,27 @@ import {
 import useColors from "@/hooks/useColors";
 import ItemImage from "./ItemImage";
 import ItemDescription from "./ItemDescription";
+import { useBattle } from "@/features/battle/BattleProvider";
 
 const Inventory = () => {
   const { fg } = useColors();
   const { data, isLoading } = useInventoryQuery(client);
+  const [state, dispatch] = useBattle();
+
+  const noSlots = state.itemSlots.a !== null && state.itemSlots.b !== null;
+
+  const pickRivalItem = useCallback(
+    (item: Item) => {
+      if (!data || data.inventory.length <= 1) {
+        return item;
+      }
+      let pickedIndex = Math.floor(Math.random() * data.inventory.length);
+      console.log({ pickedIndex });
+
+      return data.inventory[pickedIndex].item;
+    },
+    [data]
+  );
 
   if (isLoading) {
     return (
@@ -45,7 +62,17 @@ const Inventory = () => {
           <Heading size="sm">{item.name}</Heading>
           <ItemImage item={item} />
           <ItemDescription item={item} />
-          <Button size="sm" colorScheme="yellow">
+          <Button
+            size="sm"
+            colorScheme="yellow"
+            isDisabled={noSlots}
+            onClick={() =>
+              dispatch({
+                type: "addItem",
+                payload: { item, rivalItem: pickRivalItem(item) },
+              })
+            }
+          >
             Usar
           </Button>
           <Tag colorScheme="yellow">Tienes: {units}</Tag>
