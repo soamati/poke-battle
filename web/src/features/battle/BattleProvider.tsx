@@ -8,6 +8,8 @@ import {
   useReducer,
 } from "react";
 
+type Player = "user" | "rival";
+
 export type BattleState = {
   selected: Pokemon | null;
   rival: Pokemon | null;
@@ -21,9 +23,10 @@ export type BattleState = {
     b: Item | null;
   };
   lastRouletteResult: {
-    winner: "user" | "rival";
+    winner: Player;
     slot: "a" | "b";
   } | null;
+  turn: Player;
 };
 
 type BattleAction = {
@@ -34,7 +37,8 @@ type BattleAction = {
     | "reset"
     | "addItem"
     | "removeItem"
-    | "emptySlots";
+    | "emptySlots"
+    | "nextTurn";
   payload?: any;
 };
 
@@ -55,6 +59,7 @@ const initialState: BattleState = {
     b: null,
   },
   lastRouletteResult: null,
+  turn: "user",
 };
 
 const battleReducer: Reducer<BattleState, BattleAction> = (state, action) => {
@@ -95,6 +100,12 @@ const battleReducer: Reducer<BattleState, BattleAction> = (state, action) => {
         ...state,
         itemSlots: { ...initialState.itemSlots },
         rivalSlots: { ...initialState.rivalSlots },
+      };
+
+    case "nextTurn":
+      return {
+        ...state,
+        turn: state.turn === "rival" ? "user" : "rival",
       };
   }
   return { ...state };

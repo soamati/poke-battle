@@ -14,6 +14,7 @@ const Roulette = () => {
     setView("spin");
     setResult(null);
     dispatch({ type: "emptySlots" });
+    dispatch({ type: "nextTurn" });
   }, [dispatch]);
 
   if (view === "result" && result !== null) {

@@ -11,7 +11,7 @@ type Props = {
 
 const Contender = ({ pokemon, isRival = false }: Props) => {
   const { fg } = useColors();
-  const [{ phase }] = useBattle();
+  const [{ phase, turn }] = useBattle();
 
   const color = useMemo(() => {
     if (isRival) {
@@ -37,6 +37,20 @@ const Contender = ({ pokemon, isRival = false }: Props) => {
             <Badge colorScheme="blue">DEF: {pokemon.defense}</Badge>
           </Stack>
         </HStack>
+
+        {phase === "battle" && (
+          <>
+            {isRival ? (
+              <Heading size="sm" color={color}>
+                {turn === "rival" ? "ATACA" : "DEFIENDE"}
+              </Heading>
+            ) : (
+              <Heading size="sm" color={color}>
+                {turn === "user" ? "ATACA" : "DEFIENDE"}
+              </Heading>
+            )}
+          </>
+        )}
       </Stack>
     </Box>
   );
