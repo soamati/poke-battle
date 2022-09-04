@@ -1,58 +1,77 @@
 import React from "react";
+import ItemImage from "@/components/ItemImage";
+import { ArrowDownIcon } from "@chakra-ui/icons";
 import {
   Box,
-  Button,
-  Center,
-  Img,
-  SimpleGrid,
   Stack,
   Text,
+  Center,
+  SimpleGrid,
+  Button,
   useBoolean,
 } from "@chakra-ui/react";
 import { motion, useAnimation } from "framer-motion";
-import { ArrowDownIcon } from "@chakra-ui/icons";
-import { useBattle } from "./BattleProvider";
+import { useBattle } from "@/features/battle/BattleProvider";
 import useColors from "@/hooks/useColors";
-import ItemImage from "@/components/ItemImage";
+import { PossibleResult } from "./types";
 
 const size = "100px";
 
-const rotations = {
-  1: 45,
-  2: -45,
-  3: 135,
-  4: -135,
-};
+const possibleResults: PossibleResult[] = [
+  {
+    winner: "user",
+    slot: "a",
+    rotation: 45,
+  },
+  {
+    winner: "user",
+    slot: "b",
+    rotation: -135,
+  },
+  {
+    winner: "rival",
+    slot: "a",
+    rotation: -45,
+  },
+  {
+    winner: "rival",
+    slot: "b",
+    rotation: 135,
+  },
+];
 
-type RotationsKey = keyof typeof rotations;
-
-function getRotation() {
-  const result = Math.floor(Math.random() * 4 + 1) as RotationsKey;
-
-  return rotations[result];
+function getResult() {
+  const result = Math.floor(Math.random() * 4);
+  return possibleResults[result];
 }
 
-const Roulette = () => {
+type Props = {
+  setResult: (result: PossibleResult) => void;
+  setView: (view: "result" | "spin") => void;
+};
+
+const SpinView = ({ setResult, setView }: Props) => {
   const controls = useAnimation();
   const [isSpinning, { on, off }] = useBoolean(false);
-  const [rotation] = React.useState(() => getRotation());
-
   const { fg } = useColors();
   const [{ itemSlots, rivalSlots }, dispatch] = useBattle();
 
-  const start = React.useCallback(async () => {
+  const handleSpin = React.useCallback(async () => {
     on();
+    const currentResult = getResult();
+    setResult(currentResult);
 
     await controls.start({
-      rotate: 360 * 10 + rotation,
+      rotate: 360 * 10 + currentResult.rotation,
       transition: { ease: "easeInOut", duration: 5 },
     });
 
     setTimeout(() => {
       controls.set({ rotate: 0 });
       off();
+      setView("result");
     }, 3000);
-  }, [controls, on, off, rotation]);
+  }, [controls, on, off, setResult, setView]);
 
   return (
     <Stack spacing={4}>
@@ -61,12 +80,7 @@ const Roulette = () => {
       </Center>
 
       <Center>
-        <motion.div
-          animate={controls}
-          onAnimationComplete={() => {
-            console.log(`El resultado es ${rotation}`);
-          }}
-        >
+        <motion.div animate={controls}>
           <SimpleGrid columns={2} spacing={1} rounded="full" overflow="hidden">
             {/* User item A */}
             <Box
@@ -141,7 +155,7 @@ const Roulette = () => {
       </Center>
 
       <Center>
-        <Button onClick={start} isDisabled={isSpinning}>
+        <Button onClick={handleSpin} isDisabled={isSpinning}>
           Girar
         </Button>
       </Center>
@@ -149,4 +163,4 @@ const Roulette = () => {
   );
 };
 
-export default Roulette;
+export default SpinView;

@@ -11,7 +11,7 @@ type Props = {
 
 const Contender = ({ pokemon, isRival = false }: Props) => {
   const { fg } = useColors();
-  const { phase } = useBattle();
+  const [{ phase }] = useBattle();
 
   const color = useMemo(() => {
     if (isRival) {

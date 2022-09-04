@@ -8,8 +8,9 @@ import {
   useReducer,
 } from "react";
 
-type BattleState = {
+export type BattleState = {
   selected: Pokemon | null;
+  rival: Pokemon | null;
   phase: "selection" | "battle";
   itemSlots: {
     a: Item | null;
@@ -19,10 +20,21 @@ type BattleState = {
     a: Item | null;
     b: Item | null;
   };
+  lastRouletteResult: {
+    winner: "user" | "rival";
+    slot: "a" | "b";
+  } | null;
 };
 
 type BattleAction = {
-  type: "select" | "start" | "reset" | "addItem" | "removeItem";
+  type:
+    | "select"
+    | "selectRival"
+    | "start"
+    | "reset"
+    | "addItem"
+    | "removeItem"
+    | "emptySlots";
   payload?: any;
 };
 
@@ -30,17 +42,35 @@ const BattleContext = createContext<
   [BattleState, Dispatch<BattleAction>] | null
 >(null);
 
+const initialState: BattleState = {
+  selected: null,
+  rival: null,
+  phase: "selection",
+  itemSlots: {
+    a: null,
+    b: null,
+  },
+  rivalSlots: {
+    a: null,
+    b: null,
+  },
+  lastRouletteResult: null,
+};
+
 const battleReducer: Reducer<BattleState, BattleAction> = (state, action) => {
   const { type, payload } = action;
   switch (type) {
     case "select":
       return { ...state, selected: payload };
 
+    case "selectRival":
+      return { ...state, rival: payload };
+
     case "start":
       return { ...state, phase: "battle" };
 
     case "reset":
-      return { ...state, selected: null, phase: "selection" };
+      return { ...initialState };
 
     case "addItem":
       if (state.itemSlots.a !== null && state.itemSlots.b !== null) {
@@ -59,21 +89,15 @@ const battleReducer: Reducer<BattleState, BattleAction> = (state, action) => {
         itemSlots: { ...state.itemSlots, [payload]: null },
         rivalSlots: { ...state.rivalSlots, [payload]: null },
       };
+
+    case "emptySlots":
+      return {
+        ...state,
+        itemSlots: { ...initialState.itemSlots },
+        rivalSlots: { ...initialState.rivalSlots },
+      };
   }
   return { ...state };
-};
-
-const initialState: BattleState = {
-  selected: null,
-  phase: "selection",
-  itemSlots: {
-    a: null,
-    b: null,
-  },
-  rivalSlots: {
-    a: null,
-    b: null,
-  },
 };
 
 const BattleProvider = ({ children }: PropsWithChildren) => {

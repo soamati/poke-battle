@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import client from "@/client";
 import { Item, useInventoryQuery } from "@/generated";
 import {
@@ -9,6 +9,7 @@ import {
   Spinner,
   Stack,
   Tag,
+  useToast,
 } from "@chakra-ui/react";
 import useColors from "@/hooks/useColors";
 import ItemImage from "./ItemImage";
@@ -19,20 +20,44 @@ const Inventory = () => {
   const { fg } = useColors();
   const { data, isLoading } = useInventoryQuery(client);
   const [state, dispatch] = useBattle();
+  const toast = useToast();
 
   const noSlots = state.itemSlots.a !== null && state.itemSlots.b !== null;
 
-  const pickRivalItem = useCallback(
+  const pickRivalItem = React.useCallback(
     (item: Item) => {
       if (!data || data.inventory.length <= 1) {
         return item;
       }
       let pickedIndex = Math.floor(Math.random() * data.inventory.length);
-      console.log({ pickedIndex });
-
       return data.inventory[pickedIndex].item;
     },
     [data]
+  );
+
+  const handleUse = React.useCallback(
+    (item: Item, units: number) => {
+      if (
+        units === 1 &&
+        Object.values(state.itemSlots).find(
+          (used) => used && used.id === item.id
+        )
+      ) {
+        // Already used and no more units
+        toast({
+          isClosable: true,
+          title: "Solo tienes 1 unidad",
+          status: "warning",
+          position: "top",
+        });
+        return;
+      }
+      dispatch({
+        type: "addItem",
+        payload: { item, rivalItem: pickRivalItem(item) },
+      });
+    },
+    [state, dispatch, toast, pickRivalItem]
   );
 
   if (isLoading) {
@@ -66,12 +91,7 @@ const Inventory = () => {
             size="sm"
             colorScheme="yellow"
             isDisabled={noSlots}
-            onClick={() =>
-              dispatch({
-                type: "addItem",
-                payload: { item, rivalItem: pickRivalItem(item) },
-              })
-            }
+            onClick={() => handleUse(item, units)}
           >
             Usar
           </Button>

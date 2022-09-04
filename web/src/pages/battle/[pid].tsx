@@ -7,8 +7,8 @@ import { Pokemon, PokemonDocument } from "@/generated";
 import { useBattle } from "@/features/battle/BattleProvider";
 import { Stack, Text } from "@chakra-ui/react";
 import Versus from "@/features/battle/Versus";
-import Roulette from "@/features/battle/Roulette";
 import Inventory from "@/components/Inventory";
+import Roulette from "@/features/roulette";
 
 type Props = {
   pokemon: Pokemon;
@@ -18,10 +18,11 @@ const BattlePage = ({ pokemon }: Props) => {
   const [state, dispatch] = useBattle();
 
   useEffect(() => {
+    dispatch({ type: "selectRival", payload: pokemon });
     return () => {
       dispatch({ type: "reset" });
     };
-  }, [dispatch]);
+  }, [dispatch, pokemon]);
 
   return (
     <Page full>
