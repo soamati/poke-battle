@@ -1,4 +1,5 @@
-import { Item, Pokemon } from "@/generated";
+import { Item } from "@/generated";
+import { Contender } from "@/types";
 import {
   createContext,
   Dispatch,
@@ -11,8 +12,8 @@ import {
 type Player = "user" | "rival";
 
 export type BattleState = {
-  selected: Pokemon | null;
-  rival: Pokemon | null;
+  selected: Contender | null;
+  rival: Contender | null;
   phase: "selection" | "battle";
   itemSlots: {
     a: Item | null;
@@ -38,7 +39,8 @@ type BattleAction = {
     | "addItem"
     | "removeItem"
     | "emptySlots"
-    | "nextTurn";
+    | "nextTurn"
+    | "applyDamage";
   payload?: any;
 };
 
@@ -66,10 +68,10 @@ const battleReducer: Reducer<BattleState, BattleAction> = (state, action) => {
   const { type, payload } = action;
   switch (type) {
     case "select":
-      return { ...state, selected: payload };
+      return { ...state, selected: { ...payload, currentHP: payload.health } };
 
     case "selectRival":
-      return { ...state, rival: payload };
+      return { ...state, rival: { ...payload, currentHP: payload.health } };
 
     case "start":
       return { ...state, phase: "battle" };
@@ -106,6 +108,34 @@ const battleReducer: Reducer<BattleState, BattleAction> = (state, action) => {
       return {
         ...state,
         turn: state.turn === "rival" ? "user" : "rival",
+      };
+
+    case "applyDamage":
+      if (
+        !state.selected ||
+        !state.rival ||
+        payload.to === null ||
+        payload.amount === 0
+      ) {
+        return { ...state };
+      }
+
+      if (payload.to === "user") {
+        return {
+          ...state,
+          selected: {
+            ...state.selected,
+            currentHP: state.selected.currentHP - payload.amount,
+          },
+        };
+      }
+
+      return {
+        ...state,
+        rival: {
+          ...state.rival,
+          currentHP: state.rival.currentHP - payload.amount,
+        },
       };
   }
   return { ...state };
