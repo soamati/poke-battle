@@ -27,7 +27,7 @@ type Props = {};
 
 const fields = ["username", "password"];
 
-const SigninPage = (props: Props) => {
+const SigninPage = (_props: Props) => {
   const router = useRouter();
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const { ref } = useFocus<HTMLInputElement>();

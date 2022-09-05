@@ -19,7 +19,7 @@ type Props = {
   rival: Pokemon;
 };
 
-const Lobby = ({ rival }: Props) => {
+const Lobby = (_props: Props) => {
   const { fg } = useColors();
   const { data, isLoading } = usePokedexQuery(client);
   const [{ selected }, dispatch] = useBattle();

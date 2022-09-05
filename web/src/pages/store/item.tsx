@@ -8,7 +8,7 @@ import Page from "@/layout/Page";
 
 type Props = {};
 
-const ItemStorePage = (props: Props) => {
+const ItemStorePage = (_props: Props) => {
   return (
     <Page>
       <Stack>

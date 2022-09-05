@@ -16,7 +16,7 @@ type ItemProps = {
 const NavItem = ({ children, href, icon }: PropsWithChildren<ItemProps>) => {
   const { pathname } = useRouter();
 
-  const _ = useMemo(() => {
+  const color = useMemo(() => {
     return href === pathname ? "yellow.300" : undefined;
   }, [href, pathname]);
 
@@ -27,8 +27,10 @@ const NavItem = ({ children, href, icon }: PropsWithChildren<ItemProps>) => {
   return (
     <Link href={href} passHref>
       <Stack cursor="pointer" align="center" justify="center" flex={1}>
-        <Icon as={icon} />
-        <Text fontSize="sm">{children}</Text>
+        <Icon as={icon} color={color} />
+        <Text fontSize="sm" color={color}>
+          {children}
+        </Text>
       </Stack>
     </Link>
   );

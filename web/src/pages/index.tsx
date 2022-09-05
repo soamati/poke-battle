@@ -16,7 +16,7 @@ type Props = {
   user: Is<WhoamiQuery["whoami"]>;
 };
 
-const Home: NextPage<Props> = ({ user }) => {
+const Home: NextPage<Props> = (_props) => {
   return (
     <Page>
       <PokemonList />

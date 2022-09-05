@@ -72,8 +72,6 @@ const ResultView = ({ result, onContinue }: Props) => {
     onContinue();
   }, [onContinue, detail, turn, dispatch]);
 
-  React.useEffect(() => {}, [dispatch, detail, turn]);
-
   return (
     <Stack
       align="center"

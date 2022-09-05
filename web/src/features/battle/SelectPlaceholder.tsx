@@ -4,7 +4,7 @@ import { Box, Center, HStack, Spinner, Text } from "@chakra-ui/react";
 
 type Props = {};
 
-const SelectPlaceholder = (props: Props) => {
+const SelectPlaceholder = (_props: Props) => {
   const { fg } = useColors();
   return (
     <Box p={2} flex={1} borderWidth={1} borderColor={fg} rounded="sm">

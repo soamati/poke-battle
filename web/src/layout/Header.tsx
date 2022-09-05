@@ -10,7 +10,7 @@ import ToggleColorMode from "@/components/ToggleColorMode";
 
 type Props = {};
 
-const Header = (props: Props) => {
+const Header = (_props: Props) => {
   const router = useRouter();
   const { bg, fg } = useColors();
 

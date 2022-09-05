@@ -3,7 +3,7 @@ import React from "react";
 
 type Props = {};
 
-const Marker = (props: Props) => {
+const Marker = (_props: Props) => {
   const fill = useColorModeValue(
     "var(--chakra-colors-white)",
     "var(--chakra-colors-gray-800)"

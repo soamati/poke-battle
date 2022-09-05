@@ -8,6 +8,7 @@ import {
   useContext,
   useReducer,
 } from "react";
+import { BattleAction } from "./types";
 
 type Player = "user" | "rival";
 
@@ -28,20 +29,6 @@ export type BattleState = {
     slot: "a" | "b";
   } | null;
   turn: Player;
-};
-
-type BattleAction = {
-  type:
-    | "select"
-    | "selectRival"
-    | "start"
-    | "reset"
-    | "addItem"
-    | "removeItem"
-    | "emptySlots"
-    | "nextTurn"
-    | "applyDamage";
-  payload?: any;
 };
 
 const BattleContext = createContext<
