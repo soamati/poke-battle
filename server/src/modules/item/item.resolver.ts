@@ -1,6 +1,7 @@
 import {
   Arg,
   Ctx,
+  Int,
   Mutation,
   Query,
   Resolver,
@@ -9,7 +10,7 @@ import {
 import { CurrentUser } from "../../decorators/CurrentUser";
 import { IsAuth } from "../../middlewares/IsAuth";
 import { Context, CurrentUserType } from "../../types";
-import { InventoryItem } from "./item.schema";
+import { InventoryItem, ItemType } from "./item.schema";
 import { BuyItemInput } from "./types";
 
 const CONTEMPLATED_ERRORS = {
@@ -71,6 +72,42 @@ export class ItemResolver {
         error.message = "No se pudo realizar la compra";
       }
       throw error;
+    }
+  }
+
+  @UseMiddleware(IsAuth)
+  @Mutation(() => ItemType)
+  async spendItem(
+    @CurrentUser() user: CurrentUserType,
+    @Ctx() ctx: Context,
+    @Arg("itemId", () => Int) itemId: number
+  ) {
+    try {
+      const { prisma } = ctx;
+
+      let onInventory = await prisma.userItem.findUnique({
+        where: { userId_itemId: { userId: user.id, itemId } },
+        include: { item: true },
+      });
+
+      if (!onInventory || onInventory.units < 1) {
+        throw new Error("No units available");
+      }
+
+      onInventory = await prisma.userItem.update({
+        where: { userId_itemId: { userId: user.id, itemId } },
+        data: { units: { decrement: 1 } },
+        include: { item: true },
+      });
+
+      if (!onInventory) {
+        throw new Error("Update item error");
+      }
+
+      return onInventory.item;
+    } catch (spendError) {
+      console.log({ spendError });
+      throw new Error("No se pudo consumir el item");
     }
   }
 }

@@ -53,6 +53,7 @@ export type Mutation = {
   signin: User;
   signout: Scalars['Boolean'];
   signup: User;
+  spendItem: Item;
 };
 
 
@@ -73,6 +74,11 @@ export type MutationSigninArgs = {
 
 export type MutationSignupArgs = {
   data: UserInput;
+};
+
+
+export type MutationSpendItemArgs = {
+  itemId: Scalars['Int'];
 };
 
 export type PageInfo = {
@@ -173,6 +179,13 @@ export type BuyItemMutationVariables = Exact<{
 
 
 export type BuyItemMutation = { buyItems: boolean };
+
+export type SpendItemMutationVariables = Exact<{
+  itemId: Scalars['Int'];
+}>;
+
+
+export type SpendItemMutation = { spendItem: { id: number } };
 
 export type PokedexQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -300,6 +313,26 @@ export const useBuyItemMutation = <
     useMutation<BuyItemMutation, TError, BuyItemMutationVariables, TContext>(
       ['BuyItem'],
       (variables?: BuyItemMutationVariables) => fetcher<BuyItemMutation, BuyItemMutationVariables>(client, BuyItemDocument, variables, headers)(),
+      options
+    );
+export const SpendItemDocument = `
+    mutation SpendItem($itemId: Int!) {
+  spendItem(itemId: $itemId) {
+    id
+  }
+}
+    `;
+export const useSpendItemMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<SpendItemMutation, TError, SpendItemMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<SpendItemMutation, TError, SpendItemMutationVariables, TContext>(
+      ['SpendItem'],
+      (variables?: SpendItemMutationVariables) => fetcher<SpendItemMutation, SpendItemMutationVariables>(client, SpendItemDocument, variables, headers)(),
       options
     );
 export const PokedexDocument = `

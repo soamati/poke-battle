@@ -1,3 +1,9 @@
 mutation BuyItem($data: BuyItemInput!) {
   buyItems(data: $data)
 }
+
+mutation SpendItem($itemId: Int!) {
+  spendItem(itemId: $itemId) {
+    id
+  }
+}

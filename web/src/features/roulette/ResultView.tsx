@@ -6,6 +6,9 @@ import ItemImage from "@/components/ItemImage";
 import ItemDescription from "@/components/ItemDescription";
 import { Contender } from "@/types";
 import Span from "@/components/Span";
+import { useSpendItemMutation } from "@/generated";
+import client from "@/client";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Result = {
   attacker: Contender;
@@ -19,6 +22,9 @@ type Props = {
 };
 
 const ResultView = ({ result, onContinue }: Props) => {
+  const queryClient = useQueryClient();
+  const { mutate, isLoading } = useSpendItemMutation(client);
+
   const [{ itemSlots, rivalSlots, selected, rival, turn }, dispatch] =
     useBattle();
 
@@ -53,10 +59,9 @@ const ResultView = ({ result, onContinue }: Props) => {
     };
   }, [turn, selected, rival]);
 
-  const handleApplyDamageAndContinue = React.useCallback(() => {
-    if (!detail) {
-      onContinue();
-      return;
+  const handleApplyDamageAndContinue = React.useCallback(async () => {
+    if (!detail || !item) {
+      return onContinue();
     }
 
     const { winner, diff } = detail;
@@ -68,9 +73,29 @@ const ResultView = ({ result, onContinue }: Props) => {
       to = turn === "user" ? "user" : "rival";
     }
 
-    dispatch({ type: "applyDamage", payload: { to, amount: Math.abs(diff) } });
-    onContinue();
-  }, [onContinue, detail, turn, dispatch]);
+    dispatch({
+      type: "applyDamage",
+      payload: { to, amount: Math.abs(diff) },
+    });
+
+    // Only spend item if user has win the roulette
+    if (result.winner === "user") {
+      return mutate(
+        { itemId: item.id },
+        {
+          onSuccess: async () => {
+            await queryClient.invalidateQueries(["Inventory"]);
+            onContinue();
+          },
+          onError: (error) => {
+            console.log(error);
+          },
+        }
+      );
+    }
+
+    return onContinue();
+  }, [queryClient, onContinue, detail, turn, dispatch, item, mutate, result]);
 
   return (
     <Stack
@@ -123,7 +148,11 @@ const ResultView = ({ result, onContinue }: Props) => {
         </Text>
       )}
 
-      <Button colorScheme="yellow" onClick={handleApplyDamageAndContinue}>
+      <Button
+        colorScheme="yellow"
+        onClick={handleApplyDamageAndContinue}
+        isLoading={isLoading}
+      >
         Continuar
       </Button>
     </Stack>

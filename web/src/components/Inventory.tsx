@@ -74,30 +74,32 @@ const Inventory = () => {
 
   return (
     <SimpleGrid minChildWidth="200px" spacing={2}>
-      {data.inventory.map(({ item, units }) => (
-        <Stack
-          key={item.id}
-          borderColor={fg}
-          borderWidth={1}
-          align="center"
-          p="4"
-          rounded="sm"
-          spacing="4"
-        >
-          <Heading size="sm">{item.name}</Heading>
-          <ItemImage item={item} />
-          <ItemDescription item={item} />
-          <Button
-            size="sm"
-            colorScheme="yellow"
-            isDisabled={noSlots}
-            onClick={() => handleUse(item, units)}
+      {data.inventory
+        .filter(({ units }) => units > 0)
+        .map(({ item, units }) => (
+          <Stack
+            key={item.id}
+            borderColor={fg}
+            borderWidth={1}
+            align="center"
+            p="4"
+            rounded="sm"
+            spacing="4"
           >
-            Usar
-          </Button>
-          <Tag colorScheme="yellow">Tienes: {units}</Tag>
-        </Stack>
-      ))}
+            <Heading size="sm">{item.name}</Heading>
+            <ItemImage item={item} />
+            <ItemDescription item={item} />
+            <Button
+              size="sm"
+              colorScheme="yellow"
+              isDisabled={noSlots}
+              onClick={() => handleUse(item, units)}
+            >
+              Usar
+            </Button>
+            <Tag colorScheme="yellow">Tienes: {units}</Tag>
+          </Stack>
+        ))}
     </SimpleGrid>
   );
 };
