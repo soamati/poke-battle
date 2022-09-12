@@ -51,12 +51,17 @@ type Props = {
 };
 
 const SpinView = ({ setResult, setView }: Props) => {
+  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
   const controls = useAnimation();
   const [isSpinning, { on, off }] = useBoolean(false);
   const { fg } = useColors();
   const [{ itemSlots, rivalSlots }, dispatch] = useBattle();
 
   const handleSpin = React.useCallback(async () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
     on();
     const currentResult = getResult();
     setResult(currentResult);
@@ -66,7 +71,7 @@ const SpinView = ({ setResult, setView }: Props) => {
       transition: { ease: "easeInOut", duration: 5 },
     });
 
-    setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       controls.set({ rotate: 0 });
       off();
       setView("result");

@@ -4,17 +4,11 @@ import { PossibleResult } from "./types";
 import { useBattle } from "../battle/BattleProvider";
 import ItemImage from "@/components/ItemImage";
 import ItemDescription from "@/components/ItemDescription";
-import { Contender } from "@/types";
 import Span from "@/components/Span";
 import { useSpendItemMutation } from "@/generated";
 import client from "@/client";
 import { useQueryClient } from "@tanstack/react-query";
-
-type Result = {
-  attacker: Contender;
-  defender: Contender;
-  winner: "attacker" | "defender" | null;
-};
+import useResultDetail from "./useResultDetail";
 
 type Props = {
   result: PossibleResult;
@@ -22,49 +16,19 @@ type Props = {
 };
 
 const ResultView = ({ result, onContinue }: Props) => {
+  const detail = useResultDetail(result);
+
   const queryClient = useQueryClient();
   const { mutate, isLoading } = useSpendItemMutation(client);
 
-  const [{ itemSlots, rivalSlots, selected, rival, turn }, dispatch] =
-    useBattle();
-
-  const item = React.useMemo(() => {
-    if (result.winner === "user") {
-      return itemSlots[result.slot];
-    }
-    return rivalSlots[result.slot];
-  }, [result, itemSlots, rivalSlots]);
-
-  const detail = React.useMemo(() => {
-    if (!selected || !rival) {
-      return null;
-    }
-
-    let winner: Result["winner"] = null;
-    const attacker = turn === "user" ? selected : rival;
-    const defender = turn === "user" ? rival : selected;
-
-    const diff = defender.defense - attacker.attack;
-    if (diff < 0) {
-      winner = "attacker";
-    } else if (diff > 0) {
-      winner = "defender";
-    }
-
-    return {
-      attacker,
-      defender,
-      winner,
-      diff,
-    };
-  }, [turn, selected, rival]);
+  const [{ turn }, dispatch] = useBattle();
 
   const handleApplyDamageAndContinue = React.useCallback(async () => {
-    if (!detail || !item) {
+    if (!detail) {
       return onContinue();
     }
 
-    const { winner, diff } = detail;
+    const { winner, diff, buffItem } = detail;
 
     let to: typeof turn | null = null;
     if (winner === "attacker") {
@@ -75,13 +39,13 @@ const ResultView = ({ result, onContinue }: Props) => {
 
     dispatch({
       type: "applyDamage",
-      payload: { to, amount: Math.abs(diff) },
+      payload: { to, amount: diff },
     });
 
     // Only spend item if user has win the roulette
-    if (result.winner === "user") {
+    if (buffItem && result.winner === "user") {
       return mutate(
-        { itemId: item.id },
+        { itemId: buffItem.id },
         {
           onSuccess: async () => {
             await queryClient.invalidateQueries(["Inventory"]);
@@ -95,7 +59,11 @@ const ResultView = ({ result, onContinue }: Props) => {
     }
 
     return onContinue();
-  }, [queryClient, onContinue, detail, turn, dispatch, item, mutate, result]);
+  }, [detail, dispatch, mutate, queryClient, onContinue, result, turn]);
+
+  if (!detail) {
+    return null;
+  }
 
   return (
     <Stack
@@ -113,16 +81,16 @@ const ResultView = ({ result, onContinue }: Props) => {
       </Heading>
 
       {/* Item */}
-      {item ? (
+      {detail.buffItem ? (
         <Stack align="center" p="2">
           <Text textAlign="center">
             Se aplica la bonificación a tu{" "}
             {result.winner === "user" ? "pokemón" : "rival"}
           </Text>
 
-          <Heading size="xs">{item.name}</Heading>
-          <ItemImage item={item} />
-          <ItemDescription item={item} />
+          <Heading size="xs">{detail.buffItem.name}</Heading>
+          <ItemImage item={detail.buffItem} />
+          <ItemDescription item={detail.buffItem} />
         </Stack>
       ) : (
         <Text>
@@ -130,23 +98,21 @@ const ResultView = ({ result, onContinue }: Props) => {
         </Text>
       )}
 
-      {detail && (
-        <Text textAlign="center">
-          <Span>{detail.attacker.name}</Span>{" "}
-          <Tag size="sm" colorScheme="yellow">
-            ATK {detail.attacker.attack}
-          </Tag>{" "}
-          ataca a <Span>{detail.defender.name}</Span>{" "}
-          <Tag size="sm" colorScheme="yellow">
-            DEF {detail.defender.defense}
-          </Tag>
-          {" y "}
-          {detail.winner === "attacker" ? "le quita " : "pierde "}
-          <Tag size="sm" colorScheme="yellow">
-            HP {Math.abs(detail.diff)}
-          </Tag>
-        </Text>
-      )}
+      <Text textAlign="center">
+        <Span>{detail.attacker.name}</Span>{" "}
+        <Tag size="sm" colorScheme="yellow">
+          ATK {detail.attacker.attack}
+        </Tag>{" "}
+        ataca a <Span>{detail.defender.name}</Span>{" "}
+        <Tag size="sm" colorScheme="yellow">
+          DEF {detail.defender.defense}
+        </Tag>
+        {" y "}
+        {detail.winner === "attacker" ? "le quita " : "pierde "}
+        <Tag size="sm" colorScheme="yellow">
+          HP {detail.diff}
+        </Tag>
+      </Text>
 
       <Button
         colorScheme="yellow"
