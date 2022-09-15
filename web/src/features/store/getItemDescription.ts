@@ -8,7 +8,9 @@ function getDescription(item: ItemStoreQuery["itemStore"][number]["item"]) {
       ? "la defensa"
       : "la salud";
 
-  const description = `Aumenta ${stat} en ${item.value}${
+  const action = item.stat.name === "HP" ? "Restaura" : "Aumenta"
+
+  const description = `${action} ${stat} en ${item.value}${
     item.mode === "PERCENTAGE" ? "%" : ""
   }`;
 

@@ -14,6 +14,7 @@ type Detail = {
 };
 
 function useResultDetail(result: PossibleResult) {
+  const [_, dispatch] = useBattle();
   const [detail, setDetail] = React.useState<Detail | null>(null);
   const [{ itemSlots, rivalSlots, selected, rival, turn }] = useBattle();
 
@@ -37,11 +38,13 @@ function useResultDetail(result: PossibleResult) {
     let attacker = turn === "user" ? { ...selected } : { ...rival };
     let defender = turn === "user" ? { ...rival } : { ...selected };
 
-    if (item && applyTo === "attacker") {
-      attacker = applyBuff(attacker, item);
-    }
-    if (item && applyTo === "defender") {
-      defender = applyBuff(defender, item);
+    // Apply buff
+    if (item) {
+      if (applyTo === "attacker") {
+        attacker = applyBuff(attacker, item);
+      } else if (applyTo === "defender") {
+        defender = applyBuff(defender, item);
+      }
     }
 
     let diff = defender.defense - attacker.attack;
@@ -59,7 +62,7 @@ function useResultDetail(result: PossibleResult) {
       winner,
       buffItem: item,
     });
-  }, [detail, itemSlots, rivalSlots, result, rival, selected, turn]);
+  }, [detail, itemSlots, rivalSlots, result, rival, selected, turn, dispatch]);
 
   return detail;
 }

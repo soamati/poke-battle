@@ -42,6 +42,17 @@ const ResultView = ({ result, onContinue }: Props) => {
       payload: { to, amount: diff },
     });
 
+    if (buffItem && buffItem.stat.name === "HP") {
+      dispatch({
+        type: "restoreHealth",
+        payload: {
+          to: result.winner,
+          amount: buffItem.value,
+          mode: buffItem.mode,
+        },
+      });
+    }
+
     // Only spend item if user has win the roulette
     if (buffItem && result.winner === "user") {
       return mutate(
@@ -91,6 +102,12 @@ const ResultView = ({ result, onContinue }: Props) => {
           <Heading size="xs">{detail.buffItem.name}</Heading>
           <ItemImage item={detail.buffItem} />
           <ItemDescription item={detail.buffItem} />
+
+          {detail.buffItem && detail.buffItem.stat.name === "HP" && (
+            <Text fontSize="xs" fontWeight="semibold">
+              La cura se aplica al dar en &quot;Continuar&quot;
+            </Text>
+          )}
         </Stack>
       ) : (
         <Text>

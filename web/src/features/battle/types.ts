@@ -39,6 +39,13 @@ type ApplyDamageAction = Required<
   >
 >;
 
+type RestoreHealthAction = Required<
+  Action<
+    "restoreHealth",
+    { to: "user" | "rival"; amount: number; mode: string }
+  >
+>;
+
 export type BattleAction =
   | SelectAction
   | SelectRivalAction
@@ -48,4 +55,5 @@ export type BattleAction =
   | RemoveItemAction
   | EmptySlotsAction
   | NextTurnAction
-  | ApplyDamageAction;
+  | ApplyDamageAction
+  | RestoreHealthAction;

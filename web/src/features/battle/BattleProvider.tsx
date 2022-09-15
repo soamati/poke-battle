@@ -124,6 +124,46 @@ const battleReducer: Reducer<BattleState, BattleAction> = (state, action) => {
           currentHP: state.rival.currentHP - payload.amount,
         },
       };
+
+    case "restoreHealth":
+      if (!state.selected || !state.rival) {
+        return { ...state };
+      }
+
+      let current = 0;
+      let total = 0;
+      if (payload.to === "user") {
+        current = state.selected.currentHP;
+        total = state.selected.health;
+      } else {
+        current = state.rival.currentHP;
+        total = state.rival.health;
+      }
+
+      if (payload.mode === "ABSOLUTE") {
+        current += payload.amount;
+      } else if (payload.mode === "PERCENTAGE") {
+        current += total * (payload.amount / 100);
+        current = Math.round(current);
+      }
+
+      if (payload.to === "user") {
+        return {
+          ...state,
+          selected: {
+            ...state.selected,
+            currentHP: Math.min(current, total),
+          },
+        };
+      }
+
+      return {
+        ...state,
+        rival: {
+          ...state.rival,
+          currentHP: Math.min(current, total),
+        },
+      };
   }
   return { ...state };
 };
