@@ -94,6 +94,7 @@ const SpinView = ({ setResult, setView }: Props) => {
               bg="green.700"
               cursor="pointer"
               _hover={{ backgroundColor: fg }}
+              pointerEvents={isSpinning ? "none" : "all"}
               onClick={() => dispatch({ type: "removeItem", payload: "a" })}
             >
               <Center h="full">
@@ -142,6 +143,7 @@ const SpinView = ({ setResult, setView }: Props) => {
               bg="green.700"
               cursor="pointer"
               _hover={{ backgroundColor: fg }}
+              pointerEvents={isSpinning ? "none" : "all"}
               onClick={() => dispatch({ type: "removeItem", payload: "b" })}
             >
               <Center h="full">
