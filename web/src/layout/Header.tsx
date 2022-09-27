@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { useSignoutMutation } from "@/generated";
 import client from "@/client";
 import ToggleColorMode from "@/components/ToggleColorMode";
+import Link from "next/link";
 
 type Props = {};
 
@@ -39,10 +40,12 @@ const Header = (_props: Props) => {
       zIndex={10}
     >
       <Flex mx="4" my="1" justify="space-between">
-        <HStack cursor="pointer">
-          <Icon as={MdCatchingPokemon} />
-          <Text size="sm">PokéBattle</Text>
-        </HStack>
+        <Link href="/" passHref>
+          <HStack cursor="pointer">
+            <Icon as={MdCatchingPokemon} />
+            <Text size="sm">PokéBattle</Text>
+          </HStack>
+        </Link>
 
         <HStack spacing="4">
           <Button

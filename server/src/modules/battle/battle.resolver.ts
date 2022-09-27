@@ -4,6 +4,7 @@ import {
   Field,
   InputType,
   Mutation,
+  Query,
   Resolver,
   UseMiddleware,
 } from "type-graphql";
@@ -129,6 +130,25 @@ export class BattleResolver {
         error.message = "No se pudo guardar la batalla";
       }
       throw error;
+    }
+  }
+
+  @UseMiddleware(IsAuth)
+  @Query(() => [BattleType])
+  async battles(
+    @CurrentUser() user: CurrentUserType,
+    @Ctx() { prisma }: Context
+  ) {
+    try {
+      const battles = await prisma.battle.findMany({
+        where: { userId: user.id },
+        include: { user: true, rival: true, selected: true },
+        orderBy: { createdAt: "desc" },
+      });
+      return battles;
+    } catch (error) {
+      console.log(error);
+      return [];
     }
   }
 }

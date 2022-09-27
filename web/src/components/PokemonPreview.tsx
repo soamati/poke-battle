@@ -8,23 +8,25 @@ import {
   Wrap,
   WrapItem,
   Badge,
+  ImgProps,
 } from "@chakra-ui/react";
 
 type Props = {
   pokemon: Pokemon;
+  imageBoxSize?: ImgProps["boxSize"];
 };
 
-const PokemonPreview = ({ pokemon }: Props) => {
+const PokemonPreview = ({ pokemon, imageBoxSize }: Props) => {
   return (
     <Stack align="center" spacing={4}>
       <Heading size="sm">{pokemon.name}</Heading>
       <Image
         src={pokemon.image}
         alt={pokemon.name}
-        boxSize="125px"
+        boxSize={imageBoxSize ?? "125px"}
         objectFit="cover"
       />
-      <Wrap>
+      <Wrap justify="center">
         <WrapItem>
           <Badge colorScheme="green">HP: {pokemon.health}</Badge>
         </WrapItem>

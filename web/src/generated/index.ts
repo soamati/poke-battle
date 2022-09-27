@@ -136,6 +136,7 @@ export type PokemonStore = {
 };
 
 export type Query = {
+  battles: Array<Battle>;
   inventory: Array<InventoryItem>;
   itemStore: Array<ItemStore>;
   pokedex: Array<PokedexItem>;
@@ -196,6 +197,11 @@ export type SaveBattleMutationVariables = Exact<{
 
 
 export type SaveBattleMutation = { saveBattle: { id: number, winner: string, createdAt: any, user: { id: number }, selected: { id: number, name: string }, rival: { id: number, name: string } } };
+
+export type BattlesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type BattlesQuery = { battles: Array<{ id: number, winner: string, createdAt: any, selected: { id: number, name: string, image: string, attack: number, defense: number, health: number }, rival: { id: number, name: string, image: string, attack: number, defense: number, health: number } }> };
 
 export type InventoryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -312,6 +318,61 @@ export const useSaveBattleMutation = <
       (variables?: SaveBattleMutationVariables) => fetcher<SaveBattleMutation, SaveBattleMutationVariables>(client, SaveBattleDocument, variables, headers)(),
       options
     );
+export const BattlesDocument = `
+    query Battles {
+  battles {
+    id
+    winner
+    selected {
+      id
+      name
+      image
+      attack
+      defense
+      health
+    }
+    rival {
+      id
+      name
+      image
+      attack
+      defense
+      health
+    }
+    createdAt
+  }
+}
+    `;
+export const useBattlesQuery = <
+      TData = BattlesQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: BattlesQueryVariables,
+      options?: UseQueryOptions<BattlesQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<BattlesQuery, TError, TData>(
+      variables === undefined ? ['Battles'] : ['Battles', variables],
+      fetcher<BattlesQuery, BattlesQueryVariables>(client, BattlesDocument, variables, headers),
+      options
+    );
+export const useInfiniteBattlesQuery = <
+      TData = BattlesQuery,
+      TError = unknown
+    >(
+      _pageParamKey: keyof BattlesQueryVariables,
+      client: GraphQLClient,
+      variables?: BattlesQueryVariables,
+      options?: UseInfiniteQueryOptions<BattlesQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useInfiniteQuery<BattlesQuery, TError, TData>(
+      variables === undefined ? ['Battles.infinite'] : ['Battles.infinite', variables],
+      (metaData) => fetcher<BattlesQuery, BattlesQueryVariables>(client, BattlesDocument, {...variables, ...(metaData.pageParam ?? {})}, headers)(),
+      options
+    );
+
 export const InventoryDocument = `
     query Inventory {
   inventory {

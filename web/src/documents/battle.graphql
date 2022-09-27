@@ -16,3 +16,27 @@ mutation SaveBattle($data: BattleInput!) {
     createdAt
   }
 }
+
+query Battles {
+  battles {
+    id
+    winner
+    selected {
+      id
+      name
+      image
+      attack
+      defense
+      health
+    }
+    rival {
+      id
+      name
+      image
+      attack
+      defense
+      health
+    }
+    createdAt
+  }
+}

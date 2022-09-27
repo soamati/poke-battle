@@ -21,6 +21,7 @@ function useSaveBattleEffect(winner: Player) {
         onSuccess: () => {
           queryClient.invalidateQueries(["Pokedex"]);
           queryClient.invalidateQueries(["Wallet"]);
+          queryClient.invalidateQueries(["Battles"]);
         },
         onError: (error) => {
           console.log(error);

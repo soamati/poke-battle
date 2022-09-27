@@ -26,6 +26,7 @@ const Page = ({
         flexDirection="column"
         pt={showHeader ? "12" : "0"}
         pb={showNav ? "24" : "0"}
+        px={2}
       >
         {children}
       </Container>

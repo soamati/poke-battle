@@ -16,7 +16,11 @@ import ItemImage from "./ItemImage";
 import ItemDescription from "./ItemDescription";
 import { useBattle } from "@/features/battle/BattleProvider";
 
-const Inventory = () => {
+type Props = {
+  hideUseButton?: boolean;
+};
+
+const Inventory = ({ hideUseButton }: Props) => {
   const { fg } = useColors();
   const { data, isLoading } = useInventoryQuery(client);
   const [state, dispatch] = useBattle();
@@ -89,14 +93,16 @@ const Inventory = () => {
             <Heading size="sm">{item.name}</Heading>
             <ItemImage item={item} />
             <ItemDescription item={item} />
-            <Button
-              size="sm"
-              colorScheme="yellow"
-              isDisabled={noSlots}
-              onClick={() => handleUse(item, units)}
-            >
-              Usar
-            </Button>
+            {!hideUseButton && (
+              <Button
+                size="sm"
+                colorScheme="yellow"
+                isDisabled={noSlots}
+                onClick={() => handleUse(item, units)}
+              >
+                Usar
+              </Button>
+            )}
             <Tag colorScheme="yellow">Tienes: {units}</Tag>
           </Stack>
         ))}

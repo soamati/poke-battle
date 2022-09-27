@@ -1,14 +1,14 @@
-import type { NextPage } from "next";
 import React from "react";
+import NextLink from "next/link";
 import withAuthGSSP from "@/lib/withAuthGSSP";
-import dynamic from "next/dynamic";
-import { WhoamiQuery } from "@/generated";
-import { Is } from "@/types";
 import Page from "@/layout/Page";
-
-const PokemonList = dynamic(() => import("@/features/pokemon/PokemonList"), {
-  ssr: false,
-});
+import { Avatar, Button, HStack, Stack, Text } from "@chakra-ui/react";
+import { Is } from "@/types";
+import { WhoamiQuery } from "@/generated";
+import UserBattles from "@/features/user/UserBattles";
+import UserPokedex from "@/features/user/UserPokedex";
+import UserInventory from "@/features/user/UserInventory";
+import { ArrowForwardIcon } from "@chakra-ui/icons";
 
 export const getServerSideProps = withAuthGSSP();
 
@@ -16,12 +16,56 @@ type Props = {
   user: Is<WhoamiQuery["whoami"]>;
 };
 
-const Home: NextPage<Props> = (_props) => {
+const HomePage = ({ user }: Props) => {
   return (
     <Page>
-      <PokemonList />
+      <Stack spacing={8} pt={2}>
+        <HStack>
+          <Avatar size="sm" name={user.username} />
+          <Text fontWeight="bold">{user.username}</Text>
+        </HStack>
+
+        {/* Pokedex */}
+        <Stack spacing={6}>
+          <HStack justify="space-between">
+            <Text fontWeight="bold">Pokédex</Text>
+            <NextLink href="/user/pokedex" passHref>
+              <Button rightIcon={<ArrowForwardIcon />} variant="link">
+                Ver todo
+              </Button>
+            </NextLink>
+          </HStack>
+          <UserPokedex isPreview />
+        </Stack>
+
+        {/* Inventory */}
+        <Stack spacing={6}>
+          <HStack justify="space-between">
+            <Text fontWeight="bold">Inventario</Text>
+            <NextLink href="/user/inventory" passHref>
+              <Button rightIcon={<ArrowForwardIcon />} variant="link">
+                Ver todo
+              </Button>
+            </NextLink>
+          </HStack>
+          <UserInventory isPreview />
+        </Stack>
+
+        {/* Battles */}
+        <Stack spacing={6}>
+          <HStack justify="space-between">
+            <Text fontWeight="bold">Batallas</Text>
+            <NextLink href="/user/battles" passHref>
+              <Button rightIcon={<ArrowForwardIcon />} variant="link">
+                Ver todo
+              </Button>
+            </NextLink>
+          </HStack>
+          <UserBattles isPreview />
+        </Stack>
+      </Stack>
     </Page>
   );
 };
 
-export default Home;
+export default HomePage;

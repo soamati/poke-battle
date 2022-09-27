@@ -4,7 +4,7 @@ import useColors from "@/hooks/useColors";
 import { Box, Flex, Icon, Stack, Text } from "@chakra-ui/react";
 import { RiSwordFill } from "react-icons/ri";
 import { MdCatchingPokemon } from "react-icons/md";
-import { FiShoppingCart, FiUser } from "react-icons/fi";
+import { FiHome, FiShoppingCart } from "react-icons/fi";
 import { useRouter } from "next/router";
 import { IconType } from "react-icons";
 
@@ -54,17 +54,17 @@ const Nav = () => {
         boxShadow="lg"
         zIndex={10}
       >
-        <NavItem href="/" icon={RiSwordFill}>
+        <NavItem href="/" icon={FiHome}>
+          Inicio
+        </NavItem>
+        <NavItem href="/battle" icon={RiSwordFill}>
           Batalla
         </NavItem>
-        <NavItem href="/" icon={MdCatchingPokemon}>
+        <NavItem href="/user/pokedex" icon={MdCatchingPokemon}>
           Pokédex
         </NavItem>
         <NavItem href="/store/pokemon" icon={FiShoppingCart}>
           Tienda
-        </NavItem>
-        <NavItem href="/" icon={FiUser}>
-          Perfil
         </NavItem>
       </Flex>
     </Box>
