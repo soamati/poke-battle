@@ -12,6 +12,13 @@ mutation Signin($data: UserInput!) {
   }
 }
 
+mutation Signup($data: UserInput!) {
+  signup(data: $data) {
+    id
+    username
+  }
+}
+
 mutation Signout {
   signout
 }

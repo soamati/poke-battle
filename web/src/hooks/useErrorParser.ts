@@ -1,6 +1,8 @@
 import { useToast } from "@chakra-ui/react";
 import React from "react";
 
+const VALIDATION_ERROR = "Argument Validation Error";
+
 type State = {
   [property: string]: string[];
 };
@@ -24,9 +26,12 @@ export default function useErrorParser(fields: string[], options?: Options) {
 
       errors.forEach((e, i) => {
         if (i === 0 && options?.withToast) {
+          const description =
+            e.message !== VALIDATION_ERROR ? e.message : "Algo salió mal";
+
           toast({
             title: "Ups!",
-            description: e.message ?? "Algo salió mal",
+            description,
             status: "warning",
           });
         }

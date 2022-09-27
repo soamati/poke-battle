@@ -2,6 +2,7 @@ import {
   Button,
   Center,
   FormControl,
+  FormErrorMessage,
   FormHelperText,
   Heading,
   Input,
@@ -17,8 +18,15 @@ import useFocus from "@/hooks/useFocus";
 import useInput from "@/hooks/useInput";
 import withAuthGSSP from "@/lib/withAuthGSSP";
 import Page from "@/layout/Page";
+import { useSignupMutation } from "@/generated";
+import client from "@/client";
+import useErrorParser from "@/hooks/useErrorParser";
+import { useRouter } from "next/router";
+
+const fields = ["username", "password"];
 
 const SignupPage = () => {
+  const router = useRouter();
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const { ref } = useFocus<HTMLInputElement>();
 
@@ -26,10 +34,26 @@ const SignupPage = () => {
   const [username, onChangeUsername] = useInput();
   const [password, onChangePassword] = useInput();
 
+  const { mutate, isLoading } = useSignupMutation(client);
+  const { parser, errors } = useErrorParser(fields, { withToast: true });
+
+  console.log(errors);
+
+  const onSignup = (e: React.FormEvent) => {
+    e.preventDefault();
+    mutate(
+      { data: { username, password } },
+      {
+        onSuccess: () => router.push("/"),
+        onError: (error: any) => parser(error),
+      }
+    );
+  };
+
   return (
     <Page full showHeader={false} showNav={false}>
       <Center flex={1}>
-        <Form w="full">
+        <Form onSubmit={onSignup} w="full">
           <Stack
             w={["full", "sm"]}
             spacing={6}
@@ -43,7 +67,7 @@ const SignupPage = () => {
             <Heading size="md" textAlign="center">
               Bienvenido
             </Heading>
-            <FormControl>
+            <FormControl isInvalid={errors.username !== undefined}>
               <Input
                 placeholder="usuario"
                 variant="filled"
@@ -52,9 +76,12 @@ const SignupPage = () => {
                 onChange={onChangeUsername}
               />
               <FormHelperText>¿Quién eres?</FormHelperText>
+              <FormErrorMessage>
+                {errors.username && errors.username[0]}
+              </FormErrorMessage>
             </FormControl>
 
-            <FormControl>
+            <FormControl isInvalid={errors.password !== undefined}>
               <Input
                 placeholder="clave"
                 variant="filled"
@@ -62,8 +89,11 @@ const SignupPage = () => {
                 onChange={onChangePassword}
               />
               <FormHelperText>No se la diré a nadie 🤫</FormHelperText>
+              <FormErrorMessage>
+                {errors.password && errors.password[0]}
+              </FormErrorMessage>
             </FormControl>
-            <Button colorScheme="yellow" type="submit">
+            <Button colorScheme="yellow" type="submit" isLoading={isLoading}>
               Entrar
             </Button>
 

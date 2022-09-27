@@ -274,6 +274,13 @@ export type SigninMutationVariables = Exact<{
 
 export type SigninMutation = { signin: { id: number, username: string } };
 
+export type SignupMutationVariables = Exact<{
+  data: UserInput;
+}>;
+
+
+export type SignupMutation = { signup: { id: number, username: string } };
+
 export type SignoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -771,6 +778,27 @@ export const useSigninMutation = <
     useMutation<SigninMutation, TError, SigninMutationVariables, TContext>(
       ['Signin'],
       (variables?: SigninMutationVariables) => fetcher<SigninMutation, SigninMutationVariables>(client, SigninDocument, variables, headers)(),
+      options
+    );
+export const SignupDocument = `
+    mutation Signup($data: UserInput!) {
+  signup(data: $data) {
+    id
+    username
+  }
+}
+    `;
+export const useSignupMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<SignupMutation, TError, SignupMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<SignupMutation, TError, SignupMutationVariables, TContext>(
+      ['Signup'],
+      (variables?: SignupMutationVariables) => fetcher<SignupMutation, SignupMutationVariables>(client, SignupDocument, variables, headers)(),
       options
     );
 export const SignoutDocument = `
