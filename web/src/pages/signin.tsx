@@ -37,7 +37,7 @@ const SigninPage = (_props: Props) => {
   const [password, onChangePassword] = useInput();
 
   const { mutate, isLoading } = useSigninMutation(client);
-  const { parser, errors } = useErrorParser(fields);
+  const { parser, errors } = useErrorParser(fields, { withToast: true });
 
   const onSignin = (e: React.FormEvent) => {
     e.preventDefault();

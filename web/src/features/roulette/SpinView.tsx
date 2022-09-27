@@ -80,19 +80,25 @@ const SpinView = ({ setResult, setView }: Props) => {
 
   return (
     <Stack spacing={4}>
+      <Text fontWeight="semibold" textAlign="center">
+        Ruleta de batalla
+      </Text>
+
       <Center>
         <ArrowDownIcon boxSize={6} />
       </Center>
 
       <Center>
         <motion.div animate={controls}>
-          <SimpleGrid columns={2} spacing={1} rounded="full" overflow="hidden">
+          <SimpleGrid columns={2} spacing={1}>
             {/* User item A */}
             <Box
               w={size}
               h={size}
-              bg="green.700"
               cursor="pointer"
+              borderWidth={1}
+              borderColor="green.400"
+              borderStartStartRadius="full"
               _hover={{ backgroundColor: fg }}
               pointerEvents={isSpinning ? "none" : "all"}
               onClick={() => dispatch({ type: "removeItem", payload: "a" })}
@@ -110,7 +116,13 @@ const SpinView = ({ setResult, setView }: Props) => {
             </Box>
 
             {/* Rival Items */}
-            <Box w={size} h={size} bg="red.500">
+            <Box
+              w={size}
+              h={size}
+              borderWidth={1}
+              borderColor="red.400"
+              borderStartEndRadius="full"
+            >
               <Center h="full">
                 {rivalSlots.a !== null && (
                   <Stack align="center" mr="3" mt="3">
@@ -123,7 +135,13 @@ const SpinView = ({ setResult, setView }: Props) => {
               </Center>
             </Box>
 
-            <Box w={size} h={size} bg="red.500">
+            <Box
+              w={size}
+              h={size}
+              borderWidth={1}
+              borderColor="red.400"
+              borderEndStartRadius="full"
+            >
               <Center h="full">
                 {rivalSlots.b !== null && (
                   <Stack align="center" ml="3" mb="3">
@@ -140,8 +158,10 @@ const SpinView = ({ setResult, setView }: Props) => {
             <Box
               w={size}
               h={size}
-              bg="green.700"
               cursor="pointer"
+              borderWidth={1}
+              borderColor="green.400"
+              borderEndEndRadius="100%"
               _hover={{ backgroundColor: fg }}
               pointerEvents={isSpinning ? "none" : "all"}
               onClick={() => dispatch({ type: "removeItem", payload: "b" })}
@@ -162,7 +182,12 @@ const SpinView = ({ setResult, setView }: Props) => {
       </Center>
 
       <Center>
-        <Button onClick={handleSpin} isDisabled={isSpinning}>
+        <Button
+          onClick={handleSpin}
+          isDisabled={isSpinning}
+          colorScheme="yellow"
+          variant="outline"
+        >
           Girar
         </Button>
       </Center>

@@ -14,7 +14,7 @@ const Versus = ({ rival }: Props) => {
   const [{ selected }] = useBattle();
 
   return (
-    <Flex gap={2}>
+    <Flex gap={2} flexDir={["column", "row"]}>
       {selected ? <Contender pokemon={selected} /> : <SelectPlaceholder />}
       <Center>
         <Icon as={RiSwordFill} />

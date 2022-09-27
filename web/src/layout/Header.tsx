@@ -1,5 +1,13 @@
 import React from "react";
-import { Box, Button, Flex, HStack, Icon, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Icon,
+  Text,
+  useBreakpoint,
+} from "@chakra-ui/react";
 import useColors from "@/hooks/useColors";
 import { MdCatchingPokemon } from "react-icons/md";
 import { ArrowBackIcon } from "@chakra-ui/icons";
@@ -14,6 +22,7 @@ type Props = {};
 const Header = (_props: Props) => {
   const router = useRouter();
   const { bg, fg } = useColors();
+  const breakpoint = useBreakpoint();
 
   const { mutate, isLoading } = useSignoutMutation(client);
 
@@ -43,7 +52,7 @@ const Header = (_props: Props) => {
         <Link href="/" passHref>
           <HStack cursor="pointer">
             <Icon as={MdCatchingPokemon} />
-            <Text size="sm">PokéBattle</Text>
+            {breakpoint !== "base" && <Text size="sm">PokéBattle</Text>}
           </HStack>
         </Link>
 

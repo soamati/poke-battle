@@ -5,7 +5,7 @@ import Page from "@/layout/Page";
 import Lobby from "@/features/battle/Lobby";
 import { Pokemon, PokemonDocument } from "@/generated";
 import { useBattle } from "@/features/battle/BattleProvider";
-import { Stack, Text } from "@chakra-ui/react";
+import { Heading, Stack, Text } from "@chakra-ui/react";
 import Versus from "@/features/battle/Versus";
 import Inventory from "@/components/Inventory";
 import Roulette from "@/features/roulette";
@@ -45,11 +45,13 @@ const BattlePage = ({ pokemon }: Props) => {
     <Page full>
       <Stack spacing={8} pt={2}>
         {state.phase === "selection" ? (
-          <Text textAlign="center">
+          <Heading size="md" textAlign="center">
             Elige un Pokémon para enfrentar a tu rival
-          </Text>
+          </Heading>
         ) : (
-          <Text textAlign="center">¡PokéBattle!</Text>
+          <Heading size="md" textAlign="center">
+            ¡PokéBattle!
+          </Heading>
         )}
 
         <Versus rival={pokemon} />
@@ -60,7 +62,9 @@ const BattlePage = ({ pokemon }: Props) => {
           <>
             <Roulette />
             <Stack>
-              <Text>Agrega items a la ruleta</Text>
+              <Text fontWeight="semibold" textAlign="center">
+                Agrega items a la ruleta
+              </Text>
               <Inventory />
             </Stack>
           </>

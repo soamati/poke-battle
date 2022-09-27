@@ -48,7 +48,7 @@ const Nav = () => {
         rounded="sm"
         maxW="container.sm"
         mx="auto"
-        mb="2"
+        mb={["0", "2"]}
         h="16"
         justify="space-around"
         boxShadow="lg"

@@ -30,6 +30,7 @@ const Lobby = (_props: Props) => {
         <Button
           size="sm"
           colorScheme="red"
+          variant="outline"
           isDisabled={!selected}
           onClick={() => dispatch({ type: "start" })}
         >
