@@ -46,7 +46,7 @@ const Lobby = (_props: Props) => {
 
       {data && (
         <Stack borderWidth={1} borderColor={fg} p={4}>
-          <Text>Mi Pokédex</Text>
+          <Text>Pokédex</Text>
           {data.pokedex.map(({ pokemon: owned }) => (
             <Flex
               key={owned.id}

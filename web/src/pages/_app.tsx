@@ -1,3 +1,4 @@
+import "@/styles/main.css";
 import "@fontsource/kanit/300.css";
 import theme from "src/styles/theme";
 import Head from "next/head";
@@ -6,10 +7,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ChakraProvider } from "@chakra-ui/react";
 import BattleProvider from "@/features/battle/BattleProvider";
+import { useRouteChanging } from "@/hooks/useRouteChanging";
 
 const client = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
+  useRouteChanging();
+
   return (
     <>
       <Head>
