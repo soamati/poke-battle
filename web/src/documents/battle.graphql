@@ -1,0 +1,18 @@
+mutation SaveBattle($data: BattleInput!) {
+  saveBattle(data: $data) {
+    id
+    user {
+      id
+    }
+    selected {
+      id
+      name
+    }
+    rival {
+      id
+      name
+    }
+    winner
+    createdAt
+  }
+}

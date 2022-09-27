@@ -8,9 +8,7 @@ import {
   useContext,
   useReducer,
 } from "react";
-import { BattleAction } from "./types";
-
-type Player = "user" | "rival";
+import { BattleAction, Player } from "./types";
 
 export type BattleState = {
   selected: Contender | null;

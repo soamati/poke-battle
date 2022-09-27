@@ -1,5 +1,7 @@
 import { Item, Pokemon } from "@/generated";
 
+export type Player = "user" | "rival";
+
 type Action<Type extends string, Payload = null> = {
   type: Type;
   payload?: Payload;

@@ -1,6 +1,6 @@
 import { GraphQLClient } from 'graphql-request';
 import { RequestInit } from 'graphql-request/dist/types.dom';
-import { useQuery, useInfiniteQuery, useMutation, UseQueryOptions, UseInfiniteQueryOptions, UseMutationOptions } from '@tanstack/react-query';
+import { useMutation, useQuery, useInfiniteQuery, UseMutationOptions, UseQueryOptions, UseInfiniteQueryOptions } from '@tanstack/react-query';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -17,6 +17,22 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  DateTime: any;
+};
+
+export type Battle = {
+  createdAt: Scalars['DateTime'];
+  id: Scalars['Float'];
+  rival: Pokemon;
+  selected: Pokemon;
+  user: User;
+  winner: Scalars['String'];
+};
+
+export type BattleInput = {
+  rivalId: Scalars['Float'];
+  selectedId: Scalars['Float'];
+  winner: Scalars['String'];
 };
 
 export type BuyItemInput = {
@@ -50,6 +66,7 @@ export type ItemWithCount = {
 export type Mutation = {
   buyItems: Scalars['Boolean'];
   buyPokemon: Pokemon;
+  saveBattle: Battle;
   signin: User;
   signout: Scalars['Boolean'];
   signup: User;
@@ -64,6 +81,11 @@ export type MutationBuyItemsArgs = {
 
 export type MutationBuyPokemonArgs = {
   id: Scalars['Int'];
+};
+
+
+export type MutationSaveBattleArgs = {
+  data: BattleInput;
 };
 
 
@@ -168,6 +190,13 @@ export type Wallet = {
   amount: Scalars['Float'];
 };
 
+export type SaveBattleMutationVariables = Exact<{
+  data: BattleInput;
+}>;
+
+
+export type SaveBattleMutation = { saveBattle: { id: number, winner: string, createdAt: any, user: { id: number }, selected: { id: number, name: string }, rival: { id: number, name: string } } };
+
 export type InventoryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -250,6 +279,39 @@ export type WalletQueryVariables = Exact<{ [key: string]: never; }>;
 export type WalletQuery = { wallet?: { amount: number } | null };
 
 
+export const SaveBattleDocument = `
+    mutation SaveBattle($data: BattleInput!) {
+  saveBattle(data: $data) {
+    id
+    user {
+      id
+    }
+    selected {
+      id
+      name
+    }
+    rival {
+      id
+      name
+    }
+    winner
+    createdAt
+  }
+}
+    `;
+export const useSaveBattleMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<SaveBattleMutation, TError, SaveBattleMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<SaveBattleMutation, TError, SaveBattleMutationVariables, TContext>(
+      ['SaveBattle'],
+      (variables?: SaveBattleMutationVariables) => fetcher<SaveBattleMutation, SaveBattleMutationVariables>(client, SaveBattleDocument, variables, headers)(),
+      options
+    );
 export const InventoryDocument = `
     query Inventory {
   inventory {

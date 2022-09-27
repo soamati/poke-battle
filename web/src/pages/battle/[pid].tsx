@@ -9,6 +9,7 @@ import { Stack, Text } from "@chakra-ui/react";
 import Versus from "@/features/battle/Versus";
 import Inventory from "@/components/Inventory";
 import Roulette from "@/features/roulette";
+import WinnerView from "@/features/battle/WinnerView";
 
 type Props = {
   pokemon: Pokemon;
@@ -23,6 +24,22 @@ const BattlePage = ({ pokemon }: Props) => {
       dispatch({ type: "reset" });
     };
   }, [dispatch, pokemon]);
+
+  if (state.selected && state.selected.currentHP <= 0) {
+    return (
+      <Page full>
+        <WinnerView winner="rival" />
+      </Page>
+    );
+  }
+
+  if (state.rival && state.rival.currentHP <= 0) {
+    return (
+      <Page full>
+        <WinnerView winner="user" />
+      </Page>
+    );
+  }
 
   return (
     <Page full>

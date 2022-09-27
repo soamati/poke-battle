@@ -19,6 +19,7 @@ model User {
   wallet    Wallet?
   inventory UserItem[]
   pokedex   UserPokemon[]
+  battles   Battle[]
 
   @@map("user")
 }
@@ -53,14 +54,16 @@ model ItemStore {
 }
 
 model Pokemon {
-  id      Int           @id @default(autoincrement())
-  name    String
-  attack  Int
-  defense Int
-  health  Int
-  image   String
-  stock   PokemonStore?
-  ownedBy UserPokemon[]
+  id         Int           @id @default(autoincrement())
+  name       String
+  attack     Int
+  defense    Int
+  health     Int
+  image      String
+  stock      PokemonStore?
+  ownedBy    UserPokemon[]
+  asSelected Battle[]      @relation("AsSelected")
+  asRival    Battle[]      @relation("AsRival")
 
   @@map("pokemon")
 }
@@ -101,4 +104,23 @@ model UserPokemon {
 
   @@id([userId, pokemonId])
   @@map("user_pokemon")
+}
+
+enum Winner {
+  USER
+  RIVAL
+}
+
+model Battle {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int      @map("user_id")
+  selected   Pokemon  @relation(fields: [selectedId], references: [id], name: "AsSelected")
+  selectedId Int      @map("selected_id")
+  rival      Pokemon  @relation(fields: [rivalId], references: [id], name: "AsRival")
+  rivalId    Int      @map("rival_id")
+  winner     Winner
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("battle")
 }
