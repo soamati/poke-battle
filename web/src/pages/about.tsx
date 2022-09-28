@@ -3,7 +3,6 @@ import Page from "@/layout/Page";
 import { Center, HStack, Icon, Stack, Text } from "@chakra-ui/react";
 import withAuthGSSP from "@/lib/withAuthGSSP";
 import { FiGithub, FiLinkedin } from "react-icons/fi";
-import Link from "next/link";
 import ExternalLink from "@/components/ExternalLink";
 
 export const getServerSideProps = withAuthGSSP();
