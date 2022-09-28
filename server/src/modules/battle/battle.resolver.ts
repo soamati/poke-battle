@@ -9,6 +9,7 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { CurrentUser } from "../../decorators/CurrentUser";
+import { IsAdmin } from "../../middlewares/IsAdmin";
 import { IsAuth } from "../../middlewares/IsAuth";
 import { Context, CurrentUserType } from "../../types";
 import { BattleType } from "./battle.schema";
@@ -150,5 +151,13 @@ export class BattleResolver {
       console.log(error);
       return [];
     }
+  }
+
+  @UseMiddleware(IsAdmin)
+  @Query(() => [BattleType])
+  allBattles(@Ctx() { prisma }: Context) {
+    return prisma.battle.findMany({
+      include: { user: true, selected: true, rival: true },
+    });
   }
 }

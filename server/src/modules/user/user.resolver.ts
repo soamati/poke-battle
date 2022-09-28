@@ -7,7 +7,7 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { Context, CurrentUserType } from "../../types";
-import { UserInput, WalletType } from "./types";
+import { UserInput, UserStatType, WalletType } from "./types";
 import { UserType } from "./user.schema";
 import { compare, hash } from "bcrypt";
 import { cookieOptions, createAccessToken } from "./util";
@@ -105,4 +105,29 @@ export class UserResolver {
 
     return wallet;
   }
+
+  @UseMiddleware(IsAuth)
+  @Query(() => UserStatType)
+  async userStat(
+    @Ctx() { prisma }: Context,
+    @CurrentUser() { id }: CurrentUserType
+  ): Promise<UserStatType> {
+    const [winCount, loseCount] = await prisma.$transaction([
+      prisma.battle.count({
+        where: { userId: id, winner: "USER" },
+      }),
+      prisma.battle.count({
+        where: { userId: id, winner: "RIVAL" },
+      }),
+    ]);
+
+    const allCount = winCount + loseCount;
+    const winRate = calcWinRate(allCount, winCount);
+
+    return { battleStat: { allCount, winCount, loseCount, winRate } };
+  }
+}
+
+function calcWinRate(allCount: number, winCount: number) {
+  return allCount > 0 ? Number(((winCount / allCount) * 100).toFixed(2)) : 0;
 }

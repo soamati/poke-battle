@@ -66,15 +66,17 @@ const Header = (_props: Props) => {
             Volver
           </Button>
           <ToggleColorMode />
-          <Button
-            size="sm"
-            colorScheme="red"
-            variant="ghost"
-            onClick={onSignout}
-            isLoading={isLoading}
-          >
-            Salir
-          </Button>
+          {router.pathname !== "/" && (
+            <Button
+              size="sm"
+              colorScheme="red"
+              variant="ghost"
+              onClick={onSignout}
+              isLoading={isLoading}
+            >
+              Salir
+            </Button>
+          )}
         </HStack>
       </Flex>
     </Box>

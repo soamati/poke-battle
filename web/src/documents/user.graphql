@@ -28,3 +28,14 @@ query Wallet {
     amount
   }
 }
+
+query UserStat {
+  userStat {
+    battleStat {
+      allCount
+      loseCount
+      winCount
+      winRate
+    }
+  }
+}

@@ -136,6 +136,7 @@ export type PokemonStore = {
 };
 
 export type Query = {
+  allBattles: Array<Battle>;
   battles: Array<Battle>;
   inventory: Array<InventoryItem>;
   itemStore: Array<ItemStore>;
@@ -143,6 +144,7 @@ export type Query = {
   pokemon?: Maybe<Pokemon>;
   pokemonStore: Array<PokemonStore>;
   pokemons: PaginatedPokemon;
+  userStat: UserStat;
   wallet?: Maybe<Wallet>;
   whoami?: Maybe<User>;
 };
@@ -182,9 +184,20 @@ export type User = {
   username: Scalars['String'];
 };
 
+export type UserBattleStat = {
+  allCount: Scalars['Int'];
+  loseCount: Scalars['Int'];
+  winCount: Scalars['Int'];
+  winRate: Scalars['Float'];
+};
+
 export type UserInput = {
   password: Scalars['String'];
   username: Scalars['String'];
+};
+
+export type UserStat = {
+  battleStat: UserBattleStat;
 };
 
 export type Wallet = {
@@ -290,6 +303,11 @@ export type WalletQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type WalletQuery = { wallet?: { amount: number } | null };
+
+export type UserStatQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserStatQuery = { userStat: { battleStat: { allCount: number, loseCount: number, winCount: number, winRate: number } } };
 
 
 export const SaveBattleDocument = `
@@ -853,5 +871,47 @@ export const useInfiniteWalletQuery = <
     useInfiniteQuery<WalletQuery, TError, TData>(
       variables === undefined ? ['Wallet.infinite'] : ['Wallet.infinite', variables],
       (metaData) => fetcher<WalletQuery, WalletQueryVariables>(client, WalletDocument, {...variables, ...(metaData.pageParam ?? {})}, headers)(),
+      options
+    );
+
+export const UserStatDocument = `
+    query UserStat {
+  userStat {
+    battleStat {
+      allCount
+      loseCount
+      winCount
+      winRate
+    }
+  }
+}
+    `;
+export const useUserStatQuery = <
+      TData = UserStatQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: UserStatQueryVariables,
+      options?: UseQueryOptions<UserStatQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<UserStatQuery, TError, TData>(
+      variables === undefined ? ['UserStat'] : ['UserStat', variables],
+      fetcher<UserStatQuery, UserStatQueryVariables>(client, UserStatDocument, variables, headers),
+      options
+    );
+export const useInfiniteUserStatQuery = <
+      TData = UserStatQuery,
+      TError = unknown
+    >(
+      _pageParamKey: keyof UserStatQueryVariables,
+      client: GraphQLClient,
+      variables?: UserStatQueryVariables,
+      options?: UseInfiniteQueryOptions<UserStatQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useInfiniteQuery<UserStatQuery, TError, TData>(
+      variables === undefined ? ['UserStat.infinite'] : ['UserStat.infinite', variables],
+      (metaData) => fetcher<UserStatQuery, UserStatQueryVariables>(client, UserStatDocument, {...variables, ...(metaData.pageParam ?? {})}, headers)(),
       options
     );
