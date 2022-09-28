@@ -2,4 +2,4 @@
 
 - :unicorn: build your PokéTeam
 - :moneybag: buy items to buff your Pokémons in battle
-- [ ] :punch: fight your friends
+- :punch: go to battle and capture Pokémons
