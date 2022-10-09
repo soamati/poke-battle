@@ -3,9 +3,6 @@ import Page from "@/layout/Page";
 import Link from "next/link";
 import { Center, HStack, Icon, Stack, Text } from "@chakra-ui/react";
 import { MdCatchingPokemon } from "react-icons/md";
-import withAuthGSSP from "@/lib/withAuthGSSP";
-
-export const getServerSideProps = withAuthGSSP();
 
 const NotFoundPage = () => {
   return (

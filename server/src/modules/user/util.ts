@@ -15,10 +15,12 @@ export function cookieOptions(req: Request): CookieOptions {
     httpOnly: true,
   };
 
-  if (req.headers.origin?.startsWith("https")) {
-    options.secure = true;
-    options.sameSite = "none";
-  }
+  const { origin } = req.headers;
+  if (origin && !origin.startsWith("https")) return options;
+
+  options.domain = `.${req.headers.host}`;
+  options.secure = true;
+  options.sameSite = "none";
 
   return options;
 }

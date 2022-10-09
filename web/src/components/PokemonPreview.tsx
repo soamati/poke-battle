@@ -1,7 +1,6 @@
 import React from "react";
 import { Pokemon } from "@/generated";
 import {
-  Box,
   Stack,
   Heading,
   Image,
