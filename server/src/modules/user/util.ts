@@ -16,9 +16,15 @@ export function cookieOptions(req: Request): CookieOptions {
   };
 
   const { origin } = req.headers;
-  if (origin && !origin.startsWith("https")) return options;
+  
+  if (origin && !origin.startsWith("https")) {
+    return options;
+  }
 
-  options.domain = `.${req.headers.host}`;
+  if (process.env.NODE_ENV === "prod") {
+    options.domain = "pokebattle.fun";
+  }
+
   options.secure = true;
   options.sameSite = "none";
 
