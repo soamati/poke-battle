@@ -1,17 +1,27 @@
 import React from "react";
 import Page from "@/layout/Page";
-import { Center, HStack, Icon, Stack, Text } from "@chakra-ui/react";
+import {
+  Center,
+  HStack,
+  Icon,
+  Stack,
+  Text,
+  Link as ChLink,
+  Button,
+} from "@chakra-ui/react";
 import withAuthGSSP from "@/lib/withAuthGSSP";
 import { FiGithub, FiLinkedin } from "react-icons/fi";
 import ExternalLink from "@/components/ExternalLink";
+import Link from "next/link";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 
 export const getServerSideProps = withAuthGSSP();
 
 const AboutPage = () => {
   return (
-    <Page full showNav={false}>
+    <Page full showNav={false} showHeader={false}>
       <Center flex={1}>
-        <Stack spacing={4}>
+        <Stack spacing={4} align="center">
           <Text textAlign="center">
             Aplicación creada con fines de aprendizaje
           </Text>
@@ -26,6 +36,16 @@ const AboutPage = () => {
               <Icon as={FiLinkedin} cursor="pointer" />
             </ExternalLink>
           </HStack>
+
+          <Link href="/" passHref>
+            <Button
+              leftIcon={<ArrowBackIcon />}
+              colorScheme="yellow"
+              variant="ghost"
+            >
+              Volver al inicio
+            </Button>
+          </Link>
         </Stack>
       </Center>
     </Page>

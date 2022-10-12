@@ -62,13 +62,6 @@ const HomePage = ({ user }: Props) => {
           </HStack>
           <UserBattles isPreview />
         </Stack>
-
-        {/* Some links */}
-        <HStack justify="end">
-          <NextLink href="/about">
-            <Link>Acerca de PokéBattle</Link>
-          </NextLink>
-        </HStack>
       </Stack>
     </Page>
   );

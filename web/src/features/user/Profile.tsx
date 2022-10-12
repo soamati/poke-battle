@@ -57,11 +57,16 @@ const Profile = ({ user }: Props) => {
 
       <Stats />
 
-      <Center>
+      <HStack justify="space-between" pt="4">
         <NextLink href="/battle/guide">
-          <Link>Guía de Batalla</Link>
+          <Button size={["xs", "sm"]} colorScheme="yellow">
+            Guía de Batalla
+          </Button>
         </NextLink>
-      </Center>
+        <NextLink href="/about">
+          <Button size={["xs", "sm"]}>Acerca de PokéBattle</Button>
+        </NextLink>
+      </HStack>
     </Stack>
   );
 };
