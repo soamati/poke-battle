@@ -37,8 +37,6 @@ const SignupPage = () => {
   const { mutate, isLoading } = useSignupMutation(client);
   const { parser, errors } = useErrorParser(fields, { withToast: true });
 
-  console.log(errors);
-
   const onSignup = (e: React.FormEvent) => {
     e.preventDefault();
     mutate(
