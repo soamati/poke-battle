@@ -1,13 +1,10 @@
 import React from "react";
 import Page from "@/layout/Page";
 import { Center, HStack, Icon, Stack, Text, Button } from "@chakra-ui/react";
-import withAuthGSSP from "@/lib/withAuthGSSP";
 import { FiGithub, FiLinkedin } from "react-icons/fi";
 import ExternalLink from "@/components/ExternalLink";
 import Link from "next/link";
 import { ArrowBackIcon } from "@chakra-ui/icons";
-
-export const getServerSideProps = withAuthGSSP();
 
 const AboutPage = () => {
   return (
