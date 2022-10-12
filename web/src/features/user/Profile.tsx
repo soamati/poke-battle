@@ -1,15 +1,7 @@
 import React from "react";
 import NextLink from "next/link";
 import Stats from "./Stats";
-import {
-  Stack,
-  HStack,
-  Avatar,
-  Text,
-  Button,
-  Center,
-  Link,
-} from "@chakra-ui/react";
+import { Stack, HStack, Avatar, Text, Button } from "@chakra-ui/react";
 import useColors from "@/hooks/useColors";
 import { User, useSignoutMutation } from "@/generated";
 import client from "@/client";

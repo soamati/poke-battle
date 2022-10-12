@@ -2,7 +2,7 @@ import React from "react";
 import NextLink from "next/link";
 import withAuthGSSP from "@/lib/withAuthGSSP";
 import Page from "@/layout/Page";
-import { Button, HStack, Stack, Text, Link } from "@chakra-ui/react";
+import { Button, HStack, Stack, Text } from "@chakra-ui/react";
 import { Is } from "@/types";
 import { WhoamiQuery } from "@/generated";
 import UserBattles from "@/features/user/UserBattles";
