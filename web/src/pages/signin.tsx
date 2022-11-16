@@ -87,6 +87,7 @@ const SigninPage = (_props: Props) => {
                 variant="filled"
                 value={password}
                 onChange={onChangePassword}
+                type="password"
               />
               <FormHelperText>No se la diré a nadie 🤫</FormHelperText>
               <FormErrorMessage>

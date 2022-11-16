@@ -85,6 +85,7 @@ const SignupPage = () => {
                 variant="filled"
                 value={password}
                 onChange={onChangePassword}
+                type="password"
               />
               <FormHelperText>No se la diré a nadie 🤫</FormHelperText>
               <FormErrorMessage>
